@@ -17,7 +17,7 @@ This code is strongly inspired by SparkFun's RedBotMotors library
 29.10.2019- Adam Szreter, AGH University of Science and Technology
 Code developed in Arduino 1.8.9, on ESP32 DevkitC v4
 *********************************************************************/
-
+#include "pins.h"
 #include "motors.h"
 
 /* configuration of ledc channels (ESP32 internal PWM generator)
@@ -30,7 +30,18 @@ the channels do not interferre and change them if needed. */
 #define RIGHT_MOTOR_PWM_CHANNEL 0
 #define LEFT_MOTOR_PWM_CHANNEL 1
 
-Motors::Motors() {
+//extern const int RIGHT_MOTOR_IN1;
+//extern const int RIGHT_MOTOR_IN2;
+//
+//extern const int LEFT_MOTOR_IN1;
+//extern const int LEFT_MOTOR_IN2;
+//
+//extern const int RIGHT_MOTOR_PWM;
+//extern const int LEFT_MOTOR_PWM;
+
+Motors::Motors() {}
+
+void Motors::init() {
 	pinMode(RIGHT_MOTOR_IN1, OUTPUT);
 	pinMode(RIGHT_MOTOR_IN2, OUTPUT);
 	pinMode(LEFT_MOTOR_IN1, OUTPUT);
@@ -53,9 +64,9 @@ void Motors::coast() {
 	leftCoast();
 }
 
-void Motors::brake() {
-	rightBrake();
-	leftBrake();
+void Motors::stop() {
+	rightStop();
+	leftStop();
 }
 
 void Motors::rightMotor(int speed) {
@@ -84,7 +95,7 @@ to TB6612 FNG working details
 void Motors::rightFwd(byte speed) {
 	digitalWrite(RIGHT_MOTOR_IN1, HIGH);
 	digitalWrite(RIGHT_MOTOR_IN2, LOW);
-	ledcWrite(RIGH_MOTOR_PWM_CHANNEL, speed);
+	ledcWrite(RIGHT_MOTOR_PWM_CHANNEL, speed);
 }
 
 void Motors::leftFwd(byte speed) {
@@ -96,7 +107,7 @@ void Motors::leftFwd(byte speed) {
 void Motors::rightRev(byte speed) {
 	digitalWrite(RIGHT_MOTOR_IN1, LOW);
 	digitalWrite(RIGHT_MOTOR_IN2, HIGH);
-	ledcWrite(RIGH_MOTOR_PWM_CHANNEL, speed);
+	ledcWrite(RIGHT_MOTOR_PWM_CHANNEL, speed);
 }
 
 void Motors::leftRev(byte speed) {
@@ -115,12 +126,12 @@ void Motors::leftCoast() {
 	digitalWrite(LEFT_MOTOR_IN2, LOW);
 }
 
-void Motors::rightBrake() {
+void Motors::rightStop() {
 	digitalWrite(RIGHT_MOTOR_IN1, HIGH);
 	digitalWrite(RIGHT_MOTOR_IN2, HIGH);
 }
 
-void Motors::leftBrake() {
+void Motors::leftStop() {
 	digitalWrite(LEFT_MOTOR_IN1, HIGH);
 	digitalWrite(LEFT_MOTOR_IN2, HIGH);
 }

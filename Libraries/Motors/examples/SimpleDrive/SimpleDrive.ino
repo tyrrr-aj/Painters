@@ -1,11 +1,8 @@
-//#include "pins.h"
-//#include "libraries/motors/motors.h"
 #include "motors.h"
 
 Motors motors;
 
 void setup() {
-  // put your setup code here, to run once:
   motors.init();
   motors.drive(255);
   delay(1000);
@@ -22,6 +19,5 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
 
 }

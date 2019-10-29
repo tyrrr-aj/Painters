@@ -1,4 +1,5 @@
 Motors		KEYWORD1
+init		KEYWORD2
 drive		KEYWORD2
 coast		KEYWORD2
 brake		KEYWORD2

@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Angle.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Solver.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -131,6 +132,7 @@
     <Text Include="Geogebra.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Angle.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Solver.h" />
   </ItemGroup>

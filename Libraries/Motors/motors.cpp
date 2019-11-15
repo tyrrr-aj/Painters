@@ -71,19 +71,19 @@ void Motors::stop() {
 
 void Motors::rightMotor(int speed) {
 	if (speed > 0) {
-		rightFwd((byte) speed);
+		rightFwd((int) speed);
 	}
 	else {
-		rightRev((byte) abs(speed));
+		rightRev((int) abs(speed));
 	}
 }
 
 void Motors::leftMotor(int speed) {
 	if (speed > 0) {
-		leftFwd((byte) speed);
+		leftFwd((int) speed);
 	}
 	else {
-		leftRev((byte) abs(speed));
+		leftRev((int) abs(speed));
 	}
 }
 
@@ -92,25 +92,25 @@ All methods below are private and strongly connected
 to TB6612 FNG working details
 ****************************************************/
 
-void Motors::rightFwd(byte speed) {
+void Motors::rightFwd(int speed) {
 	digitalWrite(RIGHT_MOTOR_IN1, HIGH);
 	digitalWrite(RIGHT_MOTOR_IN2, LOW);
 	ledcWrite(RIGHT_MOTOR_PWM_CHANNEL, speed);
 }
 
-void Motors::leftFwd(byte speed) {
+void Motors::leftFwd(int speed) {
 	digitalWrite(LEFT_MOTOR_IN1, LOW);
 	digitalWrite(LEFT_MOTOR_IN2, HIGH);
 	ledcWrite(LEFT_MOTOR_PWM_CHANNEL, speed);
 }
 
-void Motors::rightRev(byte speed) {
+void Motors::rightRev(int speed) {
 	digitalWrite(RIGHT_MOTOR_IN1, LOW);
 	digitalWrite(RIGHT_MOTOR_IN2, HIGH);
 	ledcWrite(RIGHT_MOTOR_PWM_CHANNEL, speed);
 }
 
-void Motors::leftRev(byte speed) {
+void Motors::leftRev(int speed) {
 	digitalWrite(LEFT_MOTOR_IN1, HIGH);
 	digitalWrite(LEFT_MOTOR_IN2, LOW);
 	ledcWrite(LEFT_MOTOR_PWM_CHANNEL, speed);

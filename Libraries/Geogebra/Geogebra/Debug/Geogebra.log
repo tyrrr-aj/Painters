@@ -1,6 +1,2 @@
-﻿  Solver.cpp
-C:\Users\barte\Desktop\Semestr 5\Wbudowane\Algorytm Trasy\Geogebra\Geogebra\Solver.cpp(89,17): warning C4018: '<': signed/unsigned mismatch
-  Source.cpp
-  Generating Code...
-C:\Users\barte\Desktop\Semestr 5\Wbudowane\Algorytm Trasy\Geogebra\Geogebra\Solver.cpp(102,25): warning C4018: '>=': signed/unsigned mismatch
-  Geogebra.vcxproj -> C:\Users\barte\Desktop\Semestr 5\Wbudowane\Algorytm Trasy\Geogebra\Debug\Geogebra.exe
+﻿  Source.cpp
+  Geogebra.vcxproj -> C:\Users\barte\Desktop\Semestr 5\Wbudowane\Repo1\Painters\Libraries\Geogebra\Debug\Geogebra.exe

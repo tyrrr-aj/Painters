@@ -17,10 +17,11 @@ This code is strongly inspired by SparkFun's RedBotMotors library
 29.10.2019- Adam Szreter, AGH University of Science and Technology
 Code developed in Arduino 1.8.9, on ESP32 DevkitC v4
 *********************************************************************/
+#include <cstddef>
 #ifndef MOTORS_H
 #define MOTOR_H
 
-#include <arduino.h>
+//#include <arduino.h>
 
 class Motors {
 	public:
@@ -37,10 +38,10 @@ class Motors {
 		void leftStop();
 	
 	private:
-		void rightFwd(byte speed);
-		void leftFwd(byte speed);
-		void rightRev(byte speed);
-		void leftRev(byte speed);
+		void rightFwd(int speed);
+		void leftFwd(int speed);
+		void rightRev(int speed);
+		void leftRev(int speed);
 };
 
 #endif

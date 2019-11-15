@@ -13,9 +13,6 @@ private:
 
 	bool allCovered = false;
 	int currentOrderNumber;
-public:
-	Solver();
-	Solver(std::vector<Point*> points, int X, int Y, int N);
 
 	Point* pickFirst(std::vector<Point*>& points);
 
@@ -25,6 +22,9 @@ public:
 
 	void distributeOrder(Point point, std::vector<Point*>& areaPoints);
 	void distributeOrder1(Point* point, std::vector<Point*>& areaPoints);
+public:
+	Solver();
+	Solver(std::vector<Point*> points, int X, int Y, int N);
 
 	void solve();
 };

@@ -11,7 +11,7 @@ won't work unless you set pin bindings' values there appropriately!
 
 This file usage is intended to be beer-driven: 
 if you think you've found a bug, don't contact
-us, instead drink a craft beer. If the bug is
+us, drink a craft beer instead. If bug is
 still there - repeat. Cheers!
 	
 This code has been inspired by SparkFun's RedBotEncoder library

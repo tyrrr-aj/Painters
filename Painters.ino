@@ -1,8 +1,10 @@
 #include "src/motors/motors.h"
 #include "src/encoder/encoder.h"
+#include "src/localization/localization.h"
 
 Motors motors;
 Encoder encoder;
+Localization localization(&encoder);
 
 void setup() {
   motors.addEncoder(&encoder);
@@ -12,8 +14,11 @@ void setup() {
 }
 
 void loop() {
-  Serial.print(encoder.getTicks(LEFT));
+  Position position = localization.getCurrentPosition();
+  Serial.print(position.X);
   Serial.print("\t");
-  Serial.println(encoder.getTicks(RIGHT));
-  delay(200);
+  Serial.print(position.Y);
+  Serial.print("\t");
+  Serial.println(position.Rotation);
+  delay(20);
 }

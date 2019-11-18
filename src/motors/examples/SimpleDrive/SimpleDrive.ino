@@ -1,9 +1,8 @@
-#include "motors.h"
+#include "../../motors.h"
 
 Motors motors;
 
 void setup() {
-  motors.init();
   motors.drive(255);
   delay(1000);
   motors.coast();

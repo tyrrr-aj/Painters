@@ -1,27 +1,18 @@
-//#include "pins.h"
-//#include "libraries/motors/motors.h"
-#include "motors.h"
+#include "src/motors/motors.h"
+#include "src/encoder/encoder.h"
 
 Motors motors;
+Encoder encoder;
 
 void setup() {
-  // put your setup code here, to run once:
-  motors.init();
+  motors.addEncoder(&encoder);
+  Serial.begin(115200);
   motors.drive(255);
-  delay(1000);
-  motors.coast();
-  delay(500);
-  motors.drive(-128);
-  delay(1000);
-  motors.stop();
-  delay(500);
-  motors.leftMotor(200);
-  motors.rightMotor(-200);
-  delay(1000);
-  motors.stop();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  Serial.print(encoder.getTicks(LEFT));
+  Serial.print("\t");
+  Serial.println(encoder.getTicks(RIGHT));
+  delay(200);
 }

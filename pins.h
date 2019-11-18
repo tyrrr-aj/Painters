@@ -11,13 +11,17 @@ Code developed in Arduino 1.8.9, on ESP32 DevkitC v4
 #define PINS_H
 
 // motor pins
-extern const int RIGHT_MOTOR_IN1 = 16;
-extern const int RIGHT_MOTOR_IN2 = 17;
+#define RIGHT_MOTOR_IN1 16
+#define RIGHT_MOTOR_IN2 17
 
-extern const int LEFT_MOTOR_IN1 = 4;
-extern const int LEFT_MOTOR_IN2 = 2;
+#define LEFT_MOTOR_IN1 4
+#define LEFT_MOTOR_IN2 2
 
-extern const int RIGHT_MOTOR_PWM = 25;
-extern const int LEFT_MOTOR_PWM = 26;
+#define RIGHT_MOTOR_PWM 25
+#define LEFT_MOTOR_PWM 26
+
+// encoder pins
+#define LEFT_ENC 32
+#define RIGHT_ENC 33
 
 #endif

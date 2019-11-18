@@ -4,7 +4,7 @@ motor driver. It takes care of setting appropriate pin states and
 provides a high-level API for commanding motors.
 
 Notice the "pins.h" config header file in dependecies - this library
-won't work unless you set pin bindings' values there appropriately.
+won't work unless you set pin bindings' values there appropriately!
 
 This file usage is intended to be beer-driven: 
 if you think you've found a bug, don't contact
@@ -12,16 +12,15 @@ us, instead drink a craft beer. If the bug is
 still there - repeat. Cheers!
 	
 This code is strongly inspired by SparkFun's RedBotMotors library
-- big thank you goes to it's creator from here!
+- big "thank you" goes to it's creator from here!
 	
 29.10.2019- Adam Szreter, AGH University of Science and Technology
 Code developed in Arduino 1.8.9, on ESP32 DevkitC v4
 *********************************************************************/
-#include "pins.h"
 #include "motors.h"
 
 /* configuration of ledc channels (ESP32 internal PWM generator)
-If you're using other libraries that depends on ledc, make sure
+If you're using other libraries that depend on ledc, make sure
 the channels do not interferre and change them if needed. */
 
 #define PWM_FREQ 10000
@@ -30,18 +29,7 @@ the channels do not interferre and change them if needed. */
 #define RIGHT_MOTOR_PWM_CHANNEL 0
 #define LEFT_MOTOR_PWM_CHANNEL 1
 
-//extern const int RIGHT_MOTOR_IN1;
-//extern const int RIGHT_MOTOR_IN2;
-//
-//extern const int LEFT_MOTOR_IN1;
-//extern const int LEFT_MOTOR_IN2;
-//
-//extern const int RIGHT_MOTOR_PWM;
-//extern const int LEFT_MOTOR_PWM;
-
-Motors::Motors() {}
-
-void Motors::init() {
+Motors::Motors() {
 	pinMode(RIGHT_MOTOR_IN1, OUTPUT);
 	pinMode(RIGHT_MOTOR_IN2, OUTPUT);
 	pinMode(LEFT_MOTOR_IN1, OUTPUT);
@@ -52,6 +40,12 @@ void Motors::init() {
 	
 	ledcAttachPin(RIGHT_MOTOR_PWM, RIGHT_MOTOR_PWM_CHANNEL);
 	ledcAttachPin(LEFT_MOTOR_PWM, LEFT_MOTOR_PWM_CHANNEL);
+	
+	this->encoder = NULL;
+}
+
+void Motors::addEncoder(Encoder* encoder) {
+	this->encoder = encoder;
 }
 
 void Motors::drive(int speed) {
@@ -72,24 +66,28 @@ void Motors::stop() {
 void Motors::rightMotor(int speed) {
 	if (speed > 0) {
 		rightFwd((byte) speed);
+		setEncoderDirection(RIGHT, FWD);
 	}
 	else {
 		rightRev((byte) abs(speed));
+		setEncoderDirection(RIGHT, REV);
 	}
 }
 
 void Motors::leftMotor(int speed) {
 	if (speed > 0) {
 		leftFwd((byte) speed);
+		setEncoderDirection(LEFT, FWD);
 	}
 	else {
 		leftRev((byte) abs(speed));
+		setEncoderDirection(LEFT, REV);
 	}
 }
 
 /****************************************************
-All methods below are private and strongly connected
-to TB6612 FNG working details
+All methods below are private and strongly dependant
+on TB6612 FNG working details
 ****************************************************/
 
 void Motors::rightFwd(byte speed) {
@@ -134,4 +132,13 @@ void Motors::rightStop() {
 void Motors::leftStop() {
 	digitalWrite(LEFT_MOTOR_IN1, HIGH);
 	digitalWrite(LEFT_MOTOR_IN2, HIGH);
+}
+
+/****************************************************
+Private method for handling the Encoder object
+****************************************************/
+
+void Motors::setEncoderDirection(WHEEL wheel, DIRECTION direction) {
+	if (this->encoder != NULL)
+		this->encoder->setDirection(wheel, direction);
 }

@@ -3,6 +3,9 @@ This library allows use of encoders for keeping track of mobile robot's
 current position (measured in "ticks" - refering to cogwheels' ticks
 that can be counted for robots based on the Magician Chasiss).
 
+Library needs to be supported by motors library - user is responsible
+for providing proper and up-to-date direction on each wheel.
+
 Notice the "pins.h" config header file in dependecies - this library
 won't work unless you set pin bindings' values there appropriately!
 

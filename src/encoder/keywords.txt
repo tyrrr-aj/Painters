@@ -1,0 +1,4 @@
+Encoder			KEYWORD1
+setDirection	KEYWORD2
+getTicks		KEYWORD2
+clear			KEYWORD2

@@ -1,17 +1,17 @@
 #include "Angle.h"
 
-Angle::Angle(Point firstPoint, const Point secondPoint, const Point thirdPoint)
-	:
-	startPoint(secondPoint), destPoint(thirdPoint)
+Angle::Angle()
 {
-	double xVector = secondPoint.coordX - firstPoint.coordX;
-	double yVector = secondPoint.coordY - firstPoint.coordY;
-	
-	viewPoint.coordX = secondPoint.coordX + xVector;
-	viewPoint.coordY = secondPoint.coordY + yVector;
+
 }
 
-double Angle::solveAngle()
+Angle::Angle(Point startPoint, const Point viewPoint, const Point destPoint)
+	:
+	startPoint(startPoint), viewPoint(viewPoint), destPoint(destPoint)
+{
+}
+
+void Angle::solveCoefficients()
 {
 	//Point in which robot stopped
 	double xStart = startPoint.coordX;
@@ -23,16 +23,38 @@ double Angle::solveAngle()
 	double xDest = destPoint.coordX;
 	double yDest = destPoint.coordY;
 
-	//if(yView != yStart)
-		aCoeffView = (yView - yStart) / (xView - xStart);
+	viewVector.setVector(xView - xStart, yView - yStart);
+	destVector.setVector(xDest - xStart, yDest - yStart);
+
+	//if (yView != yStart)
+	aCoeffView = (yView - yStart) / (xView - xStart);
 	//else
 
 	//if (yDest != yStart)
-		aCoeefDest = (yDest - yStart) / (xDest - xStart);
+	aCoeffDest = (yDest - yStart) / (xDest - xStart);
 	//else
+}
 
+double Angle::designateRotation()
+{
+	//return abs((aCoeffDest - aCoeffView) / (1 + aCoeffView * aCoeffDest));
+	return viewVector.getX() * destVector.getX() + viewVector.getY() * destVector.getY();
+}
 
-	double tangens = abs((aCoeefDest - aCoeffView) / (1 + aCoeffView * aCoeefDest));
+Direction Angle::getDirection()
+{
+	if (viewVector.getX() * destVector.getY() - viewVector.getY() * destVector.getX() > 0)
+		return RIGHT;
+	else
+		return LEFT;
+}
 
-	return tangens;
+Angle Angle::operator=(Angle angle)
+{
+	this->startPoint = angle.startPoint;
+	this->viewPoint = angle.viewPoint;
+	this->destPoint = angle.destPoint;
+
+	this->aCoeffView = angle.aCoeffView;
+	this->aCoeffDest = angle.aCoeffDest;
 }

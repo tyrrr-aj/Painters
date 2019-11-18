@@ -6,6 +6,7 @@
 #include "Point.h"
 #include "Solver.h"
 #include "Angle.h"
+#include "Steering.h"
 
 #include "..\..\Motors\motors.h"
 
@@ -47,7 +48,7 @@ void readFile(std::vector<Point*>& points, std::string fileName)
 	file.close();
 }
 
-/*int main()
+int main()
 {
 	std::vector<Point*> points;
 	readFile(points, "Geogebra.txt");
@@ -62,20 +63,10 @@ void readFile(std::vector<Point*>& points, std::string fileName)
 		std::cout << (*it)->orderNumber <<": (" << (*it)->coordX << "," << (*it)->coordY << ")" << std::endl;
 	}
 
+	Point startingPoint = *points[0];
 
-
-	return 0;
-	system("pause");
-}*/
-
-int main()
-{
-	const Point poin1(3, 1, 0);
-	const Point poin2(1, 3, 0);
-	const Point poin3(0, 4, 0);
-
-	Angle angle(poin1, poin2, poin3);
-	std::cout << "Result tangens:" << angle.solveAngle() << std::endl;
+	//Chassis chassis(startingPoint, );
+	//Steering steering(points,)
 
 	return 0;
 	system("pause");

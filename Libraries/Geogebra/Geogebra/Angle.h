@@ -1,18 +1,33 @@
 #pragma once
 #include "Point.h"
+#include "Vector.h"
+
+enum Direction
+{
+	LEFT,
+	RIGHT
+};
+
 class Angle
 {
 private:
-	const Point startPoint;
+	Point startPoint;
 	Point viewPoint;
-	const Point destPoint;
+	Point destPoint;
 
 	double aCoeffView;
-	double aCoeefDest;
+	double aCoeffDest;
+
+	Vector viewVector;
+	Vector destVector;
 public:
 	Angle();
-	Angle(Point firstPoint, const Point secondPoint, const Point thirdPoint);
+	Angle(Point startPoint, const Point viewPoint, const Point destPoint);
 
-	double solveAngle();
+	void solveCoefficients();
+	double designateRotation();
+	Direction getDirection();
+
+	Angle operator=(Angle angle);
 };
 

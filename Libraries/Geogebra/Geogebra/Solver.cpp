@@ -1,5 +1,4 @@
 #include "Solver.h"
-#include <vector>
 
 Solver::Solver()
 {

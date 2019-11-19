@@ -18,27 +18,35 @@ Code developed in Arduino 1.8.9, on ESP32 DevkitC v4
 #define LOCALIZATION_H
 
 #include "../encoder/encoder.h"
+#include "../vectors/Vector.h"
 
 // remember to always adjust this values to your robot!
 #define WHEEL_DIAMETER 6.0
 #define WHEELBASE 10.0
 #define TICKS_PER_REV 16
 
+
 struct Position {
 	double X;
 	double Y;
-	int Rotation;
+	
+	Vector rotation;
+	
+	bool hasSameCoordinates(Position position){
+		double eps = 0.01;
+		return X-position.X < eps && Y-position.Y < eps;
+	}
 };
 
 class Localization {
 	public:
+		
 		Localization(Encoder*);
 		Position getCurrentPosition();
 	private:
 		Encoder* encoder;
 		Position currentPosition;
 		void updatePosition();
-		Position* calculatePositionChange(int, int);
 };
 
 #endif

@@ -1,28 +1,59 @@
 #include "Steering.h"
 
-Steering::Steering(Chassis chassis)
+Steering::Steering(Motors* motor, Localization* localization)
 {
-	this->chassis = chassis;
+	this->motor = motor;
+	this->localization = localization;
 }
 
-void Steering::rotateChassis(Point point)
+void Steering::rotateChassis(Position current_localization, double angle)
+{	
+	Vector desiredVector;
+	desiredVector.X = current_localization.rotation.X * cos(angle) - current_localization.rotation.Y * sin(angle);
+	desiredVector.Y = current_localization.rotation.X * sin(angle) + current_localization.rotation.Y * cos(angle);
+	
+	if (angle > 0)
+	{
+		motor->rightMotor(100);
+		motor->leftMotor(-100);
+	}
+	else
+	{
+		motor->leftMotor(100);
+		motor->rightMotor(-100);
+	}
+	
+	while(localization->getCurrentPosition().rotation != desiredVector)
+	{
+		delay(5);
+	}
+	
+	motor->stop();
+}
+
+void Steering::calculateRotation(Point point)
 {
-	Point current_position = chassis.getPosition();
-	Point current_direction = chassis.getDirection();
+	Position current_localization = localization.getCurrentPosition();
+	
+	Point current_position(current_localization.X, current_localization.Y);
+	Point current_direction(current_localization.rotation.X, current_localization.rotation.Y);
 	Angle angle(current_position, current_direction, point);
 
 	angle.solveCoefficients();
-	double angle_cosinus = angle.designateRotation();
-	Direction direction = angle.getDirection();
+	double angle = angle.getAngle();
 
-	chassis.rotate(angle_cosinus, direction);
+	rotateChassis(current_localization, angle);
 }
 
 void Steering::leadChassis(Point point)
 {
-	double distance = chassis.getPosition().calculateDist(point);
-
-	chassis.ride(distance);
+	motor->drive(150);
+	Position destination = {point.coordX, point.coordY};
+	while(!localization->getCurrentPosition().hasSameCoordinates(destination)){
+		delay(5);
+	}
+	
+	motor->stop();
 }
 
 void Steering::driveTo(Point point)

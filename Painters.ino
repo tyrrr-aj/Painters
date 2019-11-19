@@ -1,24 +1,28 @@
 #include "src/motors/motors.h"
 #include "src/encoder/encoder.h"
-#include "src/localization/localization.h"
-
-Motors motors;
-Encoder encoder;
-Localization localization(&encoder);
+#include "src/route_planning/RoutePlanner.h"
+#include "src/Localization/localization.h"
+#include "src/steering/Steering.h"
 
 void setup() {
+  RoutePlanner routePlanner;
+  Motors motors;
+  Encoder encoder;
+  Localization localization(&encoder);
+  
   motors.addEncoder(&encoder);
-  Serial.begin(115200);
-  motors.leftMotor(100);
-  motors.rightMotor(-100);
+  
+  std::vector<Point> path;
+  Steering steering(&motors, &localization);
+  
+  path = routePlanner.getPath("patterns/pattern1.txt");
+  for (int i = 0; i < path.size(); ++i)
+  {
+    steering.driveTo(path[i]);
+  }
 }
 
 void loop() {
-  Position position = localization.getCurrentPosition();
-  Serial.print(position.X);
-  Serial.print("\t");
-  Serial.print(position.Y);
-  Serial.print("\t");
-  Serial.println(position.Rotation);
-  delay(20);
+  
 }
+  

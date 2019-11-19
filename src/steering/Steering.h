@@ -1,16 +1,22 @@
 #pragma once
-#include "Chassis.h"
+#include "../motors/motors.h"
+#include "../localization/localization.h"
+#include "Angle.h"
+#include "../vectors/Vector.h"
 
 class Steering
 {
 private:
-	Chassis chassis;
-
-	void rotateChassis(Point point);
+	Localization* localization;
+	Motors* motor;
+	
+	void rotateChassis(Position current_localization, double angle);
 	void leadChassis(Point point);
+	
+	void calculateRotation(Point point);
 public:
 	Steering() {}
-	Steering(Chassis chassis);
+	Steering(Motors*, Localization*);
 
 	void driveTo(Point point);
 

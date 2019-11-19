@@ -1,12 +1,7 @@
 #pragma once
-#include "Point.h"
-#include "Vector.h"
-
-enum Direction
-{
-	LEFT,
-	RIGHT
-};
+#include "../route_planning/Point.h"
+#include "../vectors/Vector.h"
+#include <math.h> 
 
 class Angle
 {
@@ -26,7 +21,7 @@ public:
 
 	void solveCoefficients();
 	double designateRotation();
-	Direction getDirection();
+	bool shouldRotateRight();
 
 	Angle operator=(Angle angle);
 };

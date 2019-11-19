@@ -1,28 +1,17 @@
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <algorithm> 
+#include "RoutePlanner.h"
 
-#include "Point.h"
-#include "Solver.h"
-#include "Angle.h"
-#include "Steering.h"
-
-#include "..\..\Motors\motors.h"
-
-
-bool sortByOrderNumber(Point* a, Point* b)
+bool RoutePlanner::sortByOrderNumber(Point* a, Point* b)
 {
 	return (a->orderNumber < b->orderNumber);
 }
 
-void addPoint(std::vector<Point*>& points, double coordX, double coordY, int i)
+void RoutePlanner::addPoint(std::vector<Point*>& points, double coordX, double coordY, int i)
 {
 	Point* point = new Point(coordX, coordY);
 	points.push_back(point);
 }
 
-void readFile(std::vector<Point*>& points, std::string fileName)
+void RoutePlanner::readFile(std::vector<Point*>& points, std::string fileName)
 {
 	std::ifstream file;
 	file.open(fileName);
@@ -40,7 +29,7 @@ void readFile(std::vector<Point*>& points, std::string fileName)
 			std::string stringCoordX = line.substr(bracket1 + 1, comma - bracket1);
 			std::string stringCoordY = line.substr(comma + 1, bracket2 - comma - 1);
 
-			addPoint(points, std::stod(stringCoordX), std::stod(stringCoordY), i);
+			addPoint(points, std::strtod(stringCoordX.c_str(), NULL), std::strtod(stringCoordY.c_str(), NULL), i);
 			++i;
 		}
 	}
@@ -48,17 +37,17 @@ void readFile(std::vector<Point*>& points, std::string fileName)
 	file.close();
 }
 
-int main()
+std::vector<Point> RoutePlanner::getPath(std::string path)
 {
 	std::vector<Point*> points;
-	readFile(points, "Geogebra.txt");
+	readFile(points, path);
 	int numberOfPts = points.size();
 
 	Solver solver(points, 10, 10, numberOfPts);
 	solver.solve();
 	
-	std::sort(points.begin(), points.end(), sortByOrderNumber);
-	for (auto it = points.begin(); it != points.end(); ++it)
+	return std::sort(points.begin(), points.end(), sortByOrderNumber);
+/*	for (auto it = points.begin(); it != points.end(); ++it)
 	{
 		std::cout << (*it)->orderNumber <<": (" << (*it)->coordX << "," << (*it)->coordY << ")" << std::endl;
 	}
@@ -69,5 +58,5 @@ int main()
 	//Steering steering(points,)
 
 	return 0;
-	system("pause");
+	system("pause");*/
 }

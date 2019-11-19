@@ -41,12 +41,17 @@ double Angle::designateRotation()
 	return viewVector.getX() * destVector.getX() + viewVector.getY() * destVector.getY();
 }
 
-Direction Angle::getDirection()
+bool Angle::shouldRotateRight()
 {
-	if (viewVector.getX() * destVector.getY() - viewVector.getY() * destVector.getX() > 0)
-		return RIGHT;
-	else
-		return LEFT;
+	return viewVector.getX() * destVector.getY() - viewVector.getY() * destVector.getX() > 0;
+}
+
+double Angle::getAngle()
+{
+	double angle_cosinus = designateRotation();
+	double angle = acos(angle_cosinus);
+	angle = shouldRotateRight() ? -angle : angle;
+	return angle;
 }
 
 Angle Angle::operator=(Angle angle)

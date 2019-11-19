@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <limits.h>
 
 #include "Point.h"
 

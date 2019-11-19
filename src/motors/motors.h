@@ -48,10 +48,10 @@ class Motors {
 		void addEncoder(Encoder*);
 	
 	private:
-		void rightFwd(byte speed);
-		void leftFwd(byte speed);
-		void rightRev(byte speed);
-		void leftRev(byte speed);
+		void rightFwd(uint8_t speed);
+		void leftFwd(uint8_t speed);
+		void rightRev(uint8_t speed);
+		void leftRev(uint8_t speed);
 		Encoder* encoder;
 		void setEncoderDirection(WHEEL, DIRECTION);
 };

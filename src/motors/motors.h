@@ -48,19 +48,12 @@ class Motors {
 		void addEncoder(Encoder*);
 	
 	private:
-<<<<<<< HEAD:src/motors/motors.h
 		void rightFwd(byte speed);
 		void leftFwd(byte speed);
 		void rightRev(byte speed);
 		void leftRev(byte speed);
 		Encoder* encoder;
 		void setEncoderDirection(WHEEL, DIRECTION);
-=======
-		void rightFwd(int speed);
-		void leftFwd(int speed);
-		void rightRev(int speed);
-		void leftRev(int speed);
->>>>>>> 163412b3fcbad9a94498f17eb97e0e31b0db63bb:Libraries/Motors/motors.h
 };
 
 #endif

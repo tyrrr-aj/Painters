@@ -72,37 +72,23 @@ void Motors::stop() {
 
 void Motors::rightMotor(int speed) {
 	if (speed > 0) {
-<<<<<<< HEAD:src/motors/motors.cpp
 		rightFwd((byte) speed);
 		setEncoderDirection(RIGHT, FWD);
 	}
 	else {
 		rightRev((byte) abs(speed));
 		setEncoderDirection(RIGHT, REV);
-=======
-		rightFwd((int) speed);
-	}
-	else {
-		rightRev((int) abs(speed));
->>>>>>> 163412b3fcbad9a94498f17eb97e0e31b0db63bb:Libraries/Motors/motors.cpp
 	}
 }
 
 void Motors::leftMotor(int speed) {
 	if (speed > 0) {
-<<<<<<< HEAD:src/motors/motors.cpp
 		leftFwd((byte) speed);
 		setEncoderDirection(LEFT, FWD);
 	}
 	else {
 		leftRev((byte) abs(speed));
 		setEncoderDirection(LEFT, REV);
-=======
-		leftFwd((int) speed);
-	}
-	else {
-		leftRev((int) abs(speed));
->>>>>>> 163412b3fcbad9a94498f17eb97e0e31b0db63bb:Libraries/Motors/motors.cpp
 	}
 }
 

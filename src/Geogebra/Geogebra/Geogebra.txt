@@ -1,0 +1,34 @@
+\documentclass[10pt]{article}
+\usepackage{pstricks-add}
+\pagestyle{empty}
+\begin{document}
+\newrgbcolor{rvwvcq}{0.08235294117647059 0.396078431372549 0.7529411764705882}
+\psset{xunit=1cm,yunit=1cm,algebraic=true,dimen=middle,dotstyle=o,dotsize=5pt 0,linewidth=1.6pt,arrowsize=3pt 2,arrowinset=0.25}
+\begin{pspicture*}(-2.12732907947008,-4.191039198055946)(10.375423883891166,10.322506837438212)
+\multips(0,-4)(0,1){15}{\psline[linestyle=dashed,linecap=1,dash=1.5pt 1.5pt,linewidth=0.4pt,linecolor=lightgray]{c-c}(-2.12732907947008,0)(10.375423883891166,0)}
+\multips(-2,0)(1,0){13}{\psline[linestyle=dashed,linecap=1,dash=1.5pt 1.5pt,linewidth=0.4pt,linecolor=lightgray]{c-c}(0,-4.191039198055946)(0,10.322506837438212)}
+\psaxes[labelFontSize=\scriptstyle,xAxis=true,yAxis=true,Dx=1,Dy=1,ticksize=-2pt 0,subticks=2]{->}(0,0)(-2.12732907947008,-4.191039198055946)(10.375423883891166,10.322506837438212)
+\begin{scriptsize}
+\psdots[dotstyle=*,linecolor=rvwvcq](6.234384685835212,6.221285323978956)
+\rput[bl](6.314020055028596,6.420373746962414){\rvwvcq{$A$}}
+\psdots[dotstyle=*,linecolor=rvwvcq](5.099580674829494,6.241194166277301)
+\rput[bl](5.179216044022878,6.44028258926076){\rvwvcq{$B$}}
+\psdots[dotstyle=*,linecolor=rvwvcq](6.791832270188898,4.588760255514592)
+\rput[bl](6.871467639382282,4.787848678498051){\rvwvcq{$C$}}
+\psdots[dotstyle=*,linecolor=rvwvcq](4.601859617370845,2.0006107567296256)
+\rput[bl](4.681494986564229,2.1996991797130847){\rvwvcq{$D$}}
+\psdots[dotstyle=*,linecolor=rvwvcq](4.104138559912197,5.205934366763315)
+\rput[bl](4.183773929105581,5.4050227897467735){\rvwvcq{$E$}}
+\psdots[dotstyle=*,linecolor=rvwvcq](3.526782133260165,1.741795806851129)
+\rput[bl](3.606417502453549,1.9408842298345879){\rvwvcq{$F$}}
+\psdots[dotstyle=*,linecolor=rvwvcq](1.5757155880222637,1.2639835916908275)
+\rput[bl](1.6553509572156475,1.4630720146742864){\rvwvcq{$G$}}
+\psdots[dotstyle=*,linecolor=rvwvcq](3.3675113948733975,4.31003646333775)
+\rput[bl](3.4471467640667814,4.509124886321208){\rvwvcq{$H$}}
+\psdots[dotstyle=*,linecolor=rvwvcq](6,3)
+\rput[bl](6.075113947448445,3.195141294630379){\rvwvcq{$I$}}
+\psdots[dotstyle=*,linecolor=rvwvcq](2.591066545237906,1.54270738386767)
+\rput[bl](2.67070191443129,1.741795806851129){\rvwvcq{$J$}}
+\end{scriptsize}
+\end{pspicture*}
+\end{document}

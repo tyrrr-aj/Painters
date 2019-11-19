@@ -46,8 +46,8 @@ void Localization::updatePosition() {
 Position* Localization::calculatePositionChange(int leftTicks, int rightTicks) {
 	Position* positionChange = new Position();
 	double distanceTravelled = ((double) (leftTicks + rightTicks)) / 2;
-	positionChange->X = distanceTravelled * cos(distanceTravelled);
-	positionChange->Y = distanceTravelled * sin(distanceTravelled);
+	positionChange->X = distanceTravelled * cos(this->currentPosition->Rotation);
+	positionChange->Y = distanceTravelled * sin(this->currentPosition->Rotation);
 	positionChange->Rotation = round(((leftTicks - rightTicks) / TICKS_PER_REV * WHEEL_DIAMETER) / (2 * WHEELBASE) * 360);
 	return positionChange;
 }

@@ -18,5 +18,8 @@ public:
 	Point(double coordX, double coordY, double currentDist = 0);
 
 	Point pickFirst(std::vector<Point*>& points, int number);
-	int calculateDist(Point other);
+	double calculateDist(Point other);
+
+	//Point operator=(Point point);
+	const Point operator=(const Point point);
 };

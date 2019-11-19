@@ -1,5 +1,6 @@
-#include "Point.h"
 #include <limits.h>
+
+#include "Point.h"
 
 Point::Point()
 {
@@ -34,8 +35,18 @@ Point Point::pickFirst(std::vector<Point*>& points, int number)
 	return result;
 }
 
-int Point::calculateDist(Point other)
+double Point::calculateDist(Point other)
 {
 	return (this->coordX - other.coordX) * (this->coordX - other.coordX) +
 		(this->coordY - other.coordY) * (this->coordY - other.coordY);
+}
+
+const Point Point::operator=(const Point point)
+{
+	this->coordX = point.coordX;
+	this->coordY = point.coordY;
+	this->currentDist = point.currentDist;
+
+	this->orderNumber = point.orderNumber;
+	this->covered = point.covered;
 }

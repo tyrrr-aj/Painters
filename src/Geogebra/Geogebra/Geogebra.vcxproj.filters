@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Logical Algorithm">
-      <UniqueIdentifier>{d7414e93-b378-4fed-a45c-b3b7798c7bd3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Movement Schedule">
-      <UniqueIdentifier>{1c01ef8f-6722-4679-b2ac-cc89b721f8fa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Input Pattern Map">
       <UniqueIdentifier>{7cb0c6c4-d81b-477e-abc3-146479a50535}</UniqueIdentifier>
     </Filter>
@@ -28,10 +22,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Point.cpp">
-      <Filter>Source Files\Logical Algorithm</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Solver.cpp">
-      <Filter>Source Files\Logical Algorithm</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Angle.cpp">
       <Filter>Source Files</Filter>

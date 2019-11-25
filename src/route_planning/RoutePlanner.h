@@ -9,7 +9,7 @@
 
 class RoutePlanner {
 	public:
-		std::vector<Point> getPath(std::string);
+		std::vector<Point*> getPath(std::string);
 	
 	private:
 		void readFile(std::vector<Point*>&, std::string);

@@ -6,13 +6,56 @@ Steering::Steering(Motors* motor, Localization* localization)
 	this->localization = localization;
 }
 
-void Steering::rotateChassis(Position current_localization, double angle)
-{	
-	Vector desiredVector;
-	desiredVector.X = current_localization.rotation.X * cos(angle) - current_localization.rotation.Y * sin(angle);
-	desiredVector.Y = current_localization.rotation.X * sin(angle) + current_localization.rotation.Y * cos(angle);
+void Steering::driveTo(Point point)
+{
+	calculateTransitionVector(point);
+	calculateRotation();
 	
-	if (angle > 0)
+	rotateChassis();
+}
+
+
+/*********************************************************************
+All methods below are private.
+*********************************************************************/
+
+/*********************************************************************
+Methods to calculate needed PARAMETERES to move chassis
+*********************************************************************/
+
+void Steering::calculateTransitionVector(Point point)
+{
+	/*******************************
+	Create vector of desired transition
+	(Point A ----> Point B)
+	*******************************/
+	
+	Position currentPosition = localization->getCurrentPosition();
+	double desiredX = point.coordX - currentPosition.position.X;
+	double desiredY = point.coordY - currentPosition.position.Y;
+	transitionVector = new Vector(desiredX, desiredY);
+}
+
+void Steering::calculateRotation()
+{
+	/*******************************
+	Create angle object of needed rotation
+	*******************************/
+	
+	Position currentPosition = localization->getCurrentPosition();
+	Vector currentRotation = currentPosition.rotation;
+	angle = new Angle (*transitionVector, currentRotation);
+}
+
+/*********************************************************************
+Methods which PRACTICALLY are moving chassis
+*********************************************************************/
+
+void Steering::rotateChassis()
+{	
+	double rotationAngle = angle->getRotation();
+	
+	if (rotationAngle > 0)
 	{
 		motor->rightMotor(100);
 		motor->leftMotor(-100);
@@ -23,7 +66,9 @@ void Steering::rotateChassis(Position current_localization, double angle)
 		motor->rightMotor(-100);
 	}
 	
-	while(localization->getCurrentPosition().rotation != desiredVector)
+	Vector desiredRotation = transitionVector->getNormalVector();
+	
+	while(localization->getCurrentPosition().rotation != desiredRotation)
 	{
 		delay(5);
 	}
@@ -31,38 +76,14 @@ void Steering::rotateChassis(Position current_localization, double angle)
 	motor->stop();
 }
 
-void Steering::calculateRotation(Point point)
+void Steering::leadChassis()
 {
-	Position current_localization = localization.getCurrentPosition();
-	
-	Point current_position(current_localization.X, current_localization.Y);
-	Point current_direction(current_localization.rotation.X, current_localization.rotation.Y);
-	Angle angle(current_position, current_direction, point);
-
-	angle.solveCoefficients();
-	double angle = angle.getAngle();
-
-	rotateChassis(current_localization, angle);
-}
-
-void Steering::leadChassis(Point point)
-{
-	motor->drive(150);
+	/////////////////////////TODOOO
+	/*motor->drive(150);
 	Position destination = {point.coordX, point.coordY};
 	while(!localization->getCurrentPosition().hasSameCoordinates(destination)){
 		delay(5);
 	}
 	
-	motor->stop();
-}
-
-void Steering::driveTo(Point point)
-{
-	rotateChassis(point);
-	leadChassis(point);
-}
-
-Steering Steering::operator=(Steering steering)
-{
-	this->chassis = steering.chassis;
+	motor->stop();*/
 }

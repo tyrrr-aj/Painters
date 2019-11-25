@@ -1,24 +1,33 @@
-#pragma once
+#ifndef STEERING_H
+#define STEERING_H
+
+#include "Angle.h"
+
+#include "../route_planning/Point.h"
 #include "../motors/motors.h"
 #include "../localization/localization.h"
-#include "Angle.h"
-#include "../vectors/Vector.h"
 
 class Steering
 {
-private:
-	Localization* localization;
-	Motors* motor;
-	
-	void rotateChassis(Position current_localization, double angle);
-	void leadChassis(Point point);
-	
-	void calculateRotation(Point point);
 public:
 	Steering() {}
 	Steering(Motors*, Localization*);
 
 	void driveTo(Point point);
+private:
+	Localization* localization;
+	Motors* motor;
 
-	Steering operator=(Steering steering);
+	Vector* transitionVector;
+	void calculateTransitionVector(Point point);
+	
+	Angle* angle;
+	void calculateRotation();
+	
+	void rotateChassis();
+	void leadChassis();
+	
+	void calculateRotation(Point point);	
 };
+
+#endif

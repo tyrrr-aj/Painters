@@ -1,28 +1,30 @@
-#pragma once
-#include "../route_planning/Point.h"
-#include "../vectors/Vector.h"
+#ifndef ANGLE_H
+#define ANGLE_H
+
+#include "../localization/Vector.h"
+
 #include <math.h> 
+
+namespace angle_direction
+{
+	enum DIRECTION {LEFT,RIGHT};
+}
 
 class Angle
 {
-private:
-	Point startPoint;
-	Point viewPoint;
-	Point destPoint;
-
-	double aCoeffView;
-	double aCoeffDest;
-
-	Vector viewVector;
-	Vector destVector;
 public:
 	Angle();
-	Angle(Point startPoint, const Point viewPoint, const Point destPoint);
+	Angle(Vector,Vector);
 
-	void solveCoefficients();
-	double designateRotation();
-	bool shouldRotateRight();
+	double getRotation();
 
 	Angle operator=(Angle angle);
+private:
+	Vector desiredTransition;
+	Vector rotation;
+
+	double rotationCosinus();
+	angle_direction::DIRECTION rotationDirection();
 };
 
+#endif

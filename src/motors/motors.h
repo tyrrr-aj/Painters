@@ -28,7 +28,7 @@ Code developed in Arduino 1.8.9, on ESP32 DevkitC v4
 #ifndef MOTORS_H
 #define MOTORS_H
 
-//#include <arduino.h>
+#include <arduino.h>
 
 #include "../../pins.h"
 #include "../encoder/encoder.h"

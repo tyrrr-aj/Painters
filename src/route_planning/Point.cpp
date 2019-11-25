@@ -1,5 +1,3 @@
-#include <limits.h>
-
 #include "Point.h"
 
 Point::Point()

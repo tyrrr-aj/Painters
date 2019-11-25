@@ -5,61 +5,45 @@ Angle::Angle()
 
 }
 
-Angle::Angle(Point startPoint, const Point viewPoint, const Point destPoint)
-	:
-	startPoint(startPoint), viewPoint(viewPoint), destPoint(destPoint)
+Angle::Angle(Vector desiredTransition, Vector rotation)
 {
+	this->desiredTransition = desiredTransition;
+	this->rotation = rotation;
 }
 
-void Angle::solveCoefficients()
+
+double Angle::getRotation()
 {
-	//Point in which robot stopped
-	double xStart = startPoint.coordX;
-	double yStart = startPoint.coordY;
-	//Direction in which robot is looking at
-	double xView = viewPoint.coordX;
-	double yView = viewPoint.coordY;
-	//Destination where robot wants to go
-	double xDest = destPoint.coordX;
-	double yDest = destPoint.coordY;
-
-	viewVector.setVector(xView - xStart, yView - yStart);
-	destVector.setVector(xDest - xStart, yDest - yStart);
-
-	//if (yView != yStart)
-	aCoeffView = (yView - yStart) / (xView - xStart);
-	//else
-
-	//if (yDest != yStart)
-	aCoeffDest = (yDest - yStart) / (xDest - xStart);
-	//else
-}
-
-double Angle::designateRotation()
-{
-	//return abs((aCoeffDest - aCoeffView) / (1 + aCoeffView * aCoeffDest));
-	return viewVector.getX() * destVector.getX() + viewVector.getY() * destVector.getY();
-}
-
-bool Angle::shouldRotateRight()
-{
-	return viewVector.getX() * destVector.getY() - viewVector.getY() * destVector.getX() > 0;
-}
-
-double Angle::getAngle()
-{
-	double angle_cosinus = designateRotation();
-	double angle = acos(angle_cosinus);
-	angle = shouldRotateRight() ? -angle : angle;
-	return angle;
+	double cosinus = rotationCosinus();
+	if(rotationDirection() == angle_direction::DIRECTION::LEFT)
+		return acos(cosinus);
+	else
+		return -acos(cosinus);
 }
 
 Angle Angle::operator=(Angle angle)
 {
-	this->startPoint = angle.startPoint;
-	this->viewPoint = angle.viewPoint;
-	this->destPoint = angle.destPoint;
+	this->desiredTransition = angle.desiredTransition;
+	this->rotation = angle.rotation;
+}
 
-	this->aCoeffView = angle.aCoeffView;
-	this->aCoeffDest = angle.aCoeffDest;
+
+/*********************************************************************
+All methods below are private.
+*********************************************************************/
+
+
+double Angle::rotationCosinus()
+{
+	double scalarProduct = rotation.X * desiredTransition.X + rotation.Y * desiredTransition.Y;
+	return scalarProduct / (desiredTransition.length());		//rotation.length() == 1
+}
+
+angle_direction::DIRECTION Angle::rotationDirection()
+{
+	double vectorProduct = rotation.X * desiredTransition.Y - rotation.Y * desiredTransition.X;
+	if(vectorProduct > 0)
+		return angle_direction::DIRECTION::LEFT;
+	else
+		return angle_direction::DIRECTION::RIGHT;
 }

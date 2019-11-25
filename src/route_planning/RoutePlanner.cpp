@@ -37,7 +37,7 @@ void RoutePlanner::readFile(std::vector<Point*>& points, std::string fileName)
 	file.close();
 }
 
-std::vector<Point> RoutePlanner::getPath(std::string path)
+std::vector<Point*> RoutePlanner::getPath(std::string path)
 {
 	std::vector<Point*> points;
 	readFile(points, path);
@@ -46,7 +46,8 @@ std::vector<Point> RoutePlanner::getPath(std::string path)
 	Solver solver(points, 10, 10, numberOfPts);
 	solver.solve();
 	
-	return std::sort(points.begin(), points.end(), sortByOrderNumber);
+	//std::sort(points.begin(), points.end(), sortByOrderNumber);
+	return points;
 /*	for (auto it = points.begin(); it != points.end(); ++it)
 	{
 		std::cout << (*it)->orderNumber <<": (" << (*it)->coordX << "," << (*it)->coordY << ")" << std::endl;

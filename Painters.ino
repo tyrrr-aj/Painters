@@ -1,25 +1,24 @@
+#include "src/route_planning/RoutePlanner.h"
+
 #include "src/motors/motors.h"
 #include "src/encoder/encoder.h"
-#include "src/route_planning/RoutePlanner.h"
-#include "src/Localization/localization.h"
-#include "src/steering/Steering.h"
+
+#include "src/localization/localization.h"
+#include "src/steering/Control.h"
 
 void setup() {
   RoutePlanner routePlanner;
-  Motors motors;
-  Encoder encoder;
-  Localization localization(&encoder);
+  std::vector<Point*> path = routePlanner.getPath("patterns/pattern1.txt");
   
+  Encoder encoder;
+  Motors motors;
   motors.addEncoder(&encoder);
   
-  std::vector<Point> path;
+  Localization localization(&encoder);
   Steering steering(&motors, &localization);
+  Control control(path, steering);
   
-  path = routePlanner.getPath("patterns/pattern1.txt");
-  for (int i = 0; i < path.size(); ++i)
-  {
-    steering.driveTo(path[i]);
-  }
+  control.accomplishTrace();
 }
 
 void loop() {

@@ -16,11 +16,9 @@ Code developed in Arduino 1.8.9, on ESP32 DevkitC v4
 *********************************************************************/
 #include "localization.h"
 
-#include <math.h>
-
 Localization::Localization(Encoder* encoder) {
 	encoder = encoder;
-	currentPosition.X = currentPosition.Y = currentPosition.Position.rotation = 0;
+	currentPosition.rotation.X = 1;
 }
 
 Position Localization::getCurrentPosition() {
@@ -37,11 +35,21 @@ void Localization::updatePosition() {
 	int leftTicks = encoder->getTicks(LEFT);
 	encoder->clear();
 	
+	//Update position value
+	
 	double distanceTravelled = ((double) (leftTicks + rightTicks)) / 2;
-	currentPosition.X += distanceTravelled * currentPosition.rotation.X;
-	currentPosition.Y += distanceTravelled * currentPosition.rotation.Y;
+	double xTransition = distanceTravelled * currentPosition.rotation.X;
+	double yTransition = distanceTravelled * currentPosition.rotation.Y;
+
+	currentPosition.position.X += xTransition;
+	currentPosition.position.Y += yTransition;
+	
+	//Update rotation value
 	
 	double rotationAngleInRadians = ((rightTicks - leftTicks) / TICKS_PER_REV * WHEEL_DIAMETER) / WHEELBASE * 2 * M_PI;
-	currentPosition.rotation.X = currentPosition.rotation.X * cos(rotationAngleInRadians) - currentPosition.rotation.Y * sin(rotationAngleInRadians);
-	currentPosition.rotation.Y = currentPosition.rotation.X * sin(rotationAngleInRadians) + currentPosition.rotation.Y * cos(rotationAngleInRadians);
+	double xRotation = currentPosition.rotation.X * cos(rotationAngleInRadians) - currentPosition.rotation.Y * sin(rotationAngleInRadians);
+	double yRotation = currentPosition.rotation.X * sin(rotationAngleInRadians) + currentPosition.rotation.Y * cos(rotationAngleInRadians);
+	
+	currentPosition.rotation.X += xRotation;
+	currentPosition.rotation.Y += yRotation;
 }

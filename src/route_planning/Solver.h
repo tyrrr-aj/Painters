@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SOLVER_H
+#define SOLVER_H
+
 #include <vector>
 #include <limits.h>
 
@@ -30,3 +32,5 @@ public:
 
 	void solve();
 };
+
+#endif

@@ -17,8 +17,10 @@ Code developed in Arduino 1.8.9, on ESP32 DevkitC v4
 #ifndef LOCALIZATION_H
 #define LOCALIZATION_H
 
+#include <math.h>
+
 #include "../encoder/encoder.h"
-#include "../vectors/Vector.h"
+#include "Vector.h"
 
 // remember to always adjust this values to your robot!
 #define WHEEL_DIAMETER 6.0
@@ -27,15 +29,8 @@ Code developed in Arduino 1.8.9, on ESP32 DevkitC v4
 
 
 struct Position {
-	double X;
-	double Y;
-	
+	Vector position;
 	Vector rotation;
-	
-	bool hasSameCoordinates(Position position){
-		double eps = 0.01;
-		return X-position.X < eps && Y-position.Y < eps;
-	}
 };
 
 class Localization {

@@ -1,6 +1,9 @@
-#pragma once
+#ifndef POINT_H
+#define POINT_H
+
 #include <iostream>
 #include <vector>
+#include <limits.h>
 
 class Point
 {
@@ -23,3 +26,5 @@ public:
 	//Point operator=(Point point);
 	const Point operator=(const Point point);
 };
+
+#endif

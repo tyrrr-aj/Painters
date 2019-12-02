@@ -17,7 +17,9 @@ Code developed in Arduino 1.8.9, on ESP32 DevkitC v4
 #include "localization.h"
 
 Localization::Localization(Encoder* encoder) {
-	encoder = encoder;
+	this->encoder = encoder;
+	currentPosition.position.X = 0.0;
+	currentPosition.position.Y = 0.0;
 	currentPosition.rotation.X = 1;
 }
 
@@ -37,7 +39,7 @@ void Localization::updatePosition() {
 	
 	//Update position value
 	
-	double distanceTravelled = ((double) (leftTicks + rightTicks)) / 2;
+	double distanceTravelled = (((double) (leftTicks + rightTicks)) / (2 * TICKS_PER_REV)) * (WHEEL_DIAMETER * M_PI);
 	double xTransition = distanceTravelled * currentPosition.rotation.X;
 	double yTransition = distanceTravelled * currentPosition.rotation.Y;
 

@@ -46,7 +46,7 @@ std::vector<Point*> RoutePlanner::getPath(std::string path)
 	Solver solver(points, 10, 10, numberOfPts);
 	solver.solve();
 	
-	//std::sort(points.begin(), points.end(), sortByOrderNumber);
+	std::sort(points.begin(), points.end(), sortByOrderNumber);
 	return points;
 /*	for (auto it = points.begin(); it != points.end(); ++it)
 	{

@@ -31,8 +31,10 @@ void Steering::calculateTransitionVector(Point point)
 	*******************************/
 	
 	Position currentPosition = localization->getCurrentPosition();
-	double desiredX = point.coordX - currentPosition.position.X;
-	double desiredY = point.coordY - currentPosition.position.Y;
+	currentVector = new Vector(currentPosition.position.X, currentPosition.position.Y);
+	
+	double desiredX = point.coordX - currentVector->X;
+	double desiredY = point.coordY - currentVector->Y;
 	transitionVector = new Vector(desiredX, desiredY);
 }
 
@@ -78,12 +80,15 @@ void Steering::rotateChassis()
 
 void Steering::leadChassis()
 {
-	/////////////////////////TODOOO
-	/*motor->drive(150);
-	Position destination = {point.coordX, point.coordY};
-	while(!localization->getCurrentPosition().hasSameCoordinates(destination)){
+	double desiredX = transitionVector->X - currentVector->X;
+	double desiredY = transitionVector->Y - currentVector->Y;
+	Vector desiredPosition(desiredX, desiredY);
+	
+	motor->drive(150);
+	
+	while(localization->getCurrentPosition().position != desiredPosition){
 		delay(5);
 	}
 	
-	motor->stop();*/
+	motor->stop();
 }

@@ -17,7 +17,8 @@ public:
 private:
 	Localization* localization;
 	Motors* motor;
-
+	
+	Vector* currentVector;
 	Vector* transitionVector;
 	void calculateTransitionVector(Point point);
 	

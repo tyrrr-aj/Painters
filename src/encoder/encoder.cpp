@@ -27,8 +27,8 @@ Encoder* local_encoder;
 
 Encoder::Encoder() {
 	local_encoder = this;
-	this->editingLeftTicks = portMUX_INITIALIZER_UNLOCKED;
-	this->editingRightTicks = portMUX_INITIALIZER_UNLOCKED;
+	editingLeftTicks = portMUX_INITIALIZER_UNLOCKED;
+	editingRightTicks = portMUX_INITIALIZER_UNLOCKED;
 	clear();
 	initInterrupts();
 }
@@ -54,14 +54,14 @@ int Encoder::getTicks(WHEEL wheel) {
 }
 
 void Encoder::clear() {
-	portENTER_CRITICAL(&(this->editingLeftTicks));
-	portENTER_CRITICAL(&(this->editingRightTicks));
-	this->leftTicks = 0;
-	this->rightTicks = 0;
-	portEXIT_CRITICAL(&(this->editingRightTicks));
-	portEXIT_CRITICAL(&(this->editingLeftTicks));
-	this->leftDirection = FWD;
-	this->rightDirection = FWD;
+	portENTER_CRITICAL(&editingLeftTicks);
+	portENTER_CRITICAL(&editingRightTicks);
+	leftTicks = 0;
+	rightTicks = 0;
+	portEXIT_CRITICAL(&editingRightTicks);
+	portEXIT_CRITICAL(&editingLeftTicks);
+	leftDirection = FWD;
+	rightDirection = FWD;
 }
 
 void Encoder::initInterrupts() {

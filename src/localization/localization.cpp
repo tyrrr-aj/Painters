@@ -52,6 +52,6 @@ void Localization::updatePosition() {
 	double xRotation = currentPosition.rotation.X * cos(rotationAngleInRadians) - currentPosition.rotation.Y * sin(rotationAngleInRadians);
 	double yRotation = currentPosition.rotation.X * sin(rotationAngleInRadians) + currentPosition.rotation.Y * cos(rotationAngleInRadians);
 	
-	currentPosition.rotation.X += xRotation;
-	currentPosition.rotation.Y += yRotation;
+	currentPosition.rotation.X = xRotation;
+	currentPosition.rotation.Y = yRotation;
 }

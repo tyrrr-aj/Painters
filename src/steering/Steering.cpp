@@ -12,6 +12,7 @@ void Steering::driveTo(Point point)
 	calculateRotation();
 	
 	rotateChassis();
+	leadChassis();
 }
 
 
@@ -57,6 +58,9 @@ void Steering::rotateChassis()
 {	
 	double rotationAngle = angle->getRotation();
 	
+	Serial.print("rotationAngle: ");
+	Serial.println(rotationAngle);
+	
 	if (rotationAngle > 0)
 	{
 		motor->rightMotor(100);
@@ -70,8 +74,21 @@ void Steering::rotateChassis()
 	
 	Vector desiredRotation = transitionVector->getNormalVector();
 	
-	while(localization->getCurrentPosition().rotation != desiredRotation)
+	Vector rot = localization->getCurrentPosition().rotation;
+	Serial.print("currentRotation: ");
+	Serial.print(rot.X);
+	Serial.print(" ");
+	Serial.println(rot.Y);
+	Serial.print("desiredRotation: ");
+	Serial.print(desiredRotation.X);
+	Serial.print(" ");
+	Serial.println(desiredRotation.Y);
+	
+	while((rot = localization->getCurrentPosition().rotation) != desiredRotation)
 	{
+		Serial.print(rot.X);
+		Serial.print(" ");
+		Serial.println(rot.Y);
 		delay(5);
 	}
 	

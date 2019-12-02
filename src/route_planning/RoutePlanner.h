@@ -14,5 +14,5 @@ class RoutePlanner {
 	private:
 		void readFile(std::vector<Point*>&, std::string);
 		void addPoint(std::vector<Point*>&, double, double, int);
-		bool sortByOrderNumber(Point*, Point*);
+		static bool sortByOrderNumber(Point*, Point*);
 };

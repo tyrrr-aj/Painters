@@ -12,6 +12,7 @@ void Steering::driveTo(Point point)
 	calculateRotation();
 	
 	rotateChassis();
+	leadChassis();
 }
 
 
@@ -31,8 +32,10 @@ void Steering::calculateTransitionVector(Point point)
 	*******************************/
 	
 	Position currentPosition = localization->getCurrentPosition();
-	double desiredX = point.coordX - currentPosition.position.X;
-	double desiredY = point.coordY - currentPosition.position.Y;
+	currentVector = new Vector(currentPosition.position.X, currentPosition.position.Y);
+	
+	double desiredX = point.coordX - currentVector->X;
+	double desiredY = point.coordY - currentVector->Y;
 	transitionVector = new Vector(desiredX, desiredY);
 }
 
@@ -55,6 +58,9 @@ void Steering::rotateChassis()
 {	
 	double rotationAngle = angle->getRotation();
 	
+	Serial.print("rotationAngle: ");
+	Serial.println(rotationAngle);
+	
 	if (rotationAngle > 0)
 	{
 		motor->rightMotor(100);
@@ -68,8 +74,21 @@ void Steering::rotateChassis()
 	
 	Vector desiredRotation = transitionVector->getNormalVector();
 	
-	while(localization->getCurrentPosition().rotation != desiredRotation)
+	Vector rot = localization->getCurrentPosition().rotation;
+	Serial.print("currentRotation: ");
+	Serial.print(rot.X);
+	Serial.print(" ");
+	Serial.println(rot.Y);
+	Serial.print("desiredRotation: ");
+	Serial.print(desiredRotation.X);
+	Serial.print(" ");
+	Serial.println(desiredRotation.Y);
+	
+	while((rot = localization->getCurrentPosition().rotation) != desiredRotation)
 	{
+		Serial.print(rot.X);
+		Serial.print(" ");
+		Serial.println(rot.Y);
 		delay(5);
 	}
 	
@@ -78,12 +97,15 @@ void Steering::rotateChassis()
 
 void Steering::leadChassis()
 {
-	/////////////////////////TODOOO
-	/*motor->drive(150);
-	Position destination = {point.coordX, point.coordY};
-	while(!localization->getCurrentPosition().hasSameCoordinates(destination)){
+	double desiredX = transitionVector->X - currentVector->X;
+	double desiredY = transitionVector->Y - currentVector->Y;
+	Vector desiredPosition(desiredX, desiredY);
+	
+	motor->drive(150);
+	
+	while(localization->getCurrentPosition().position != desiredPosition){
 		delay(5);
 	}
 	
-	motor->stop();*/
+	motor->stop();
 }

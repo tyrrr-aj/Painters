@@ -45,8 +45,8 @@ class Encoder {
 		volatile int leftTicks;
 		volatile int rightTicks;
 		void initInterrupts();
-		portMUX_TYPE editingLeftTicks;
-		portMUX_TYPE editingRightTicks;
+		SemaphoreHandle_t editingLeftTicks;
+		SemaphoreHandle_t editingRightTicks;
 		static void rightIncrement();
 		static void leftIncrement();
 };

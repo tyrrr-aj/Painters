@@ -17,7 +17,7 @@ still there - repeat. Cheers!
 This code has been inspired by SparkFun's RedBotEncoder library
 - big "thank you" goes to it's creator from here!
 	
-18.11.2019- Adam Szreter, AGH University of Science and Technology
+18.11.2019 - Adam Szreter, AGH University of Science and Technology
 Code developed in Arduino 1.8.9, on ESP32 DevkitC v4
 *********************************************************************/
 
@@ -27,8 +27,10 @@ Encoder* local_encoder;
 
 Encoder::Encoder() {
 	local_encoder = this;
-	this->editingLeftTicks = portMUX_INITIALIZER_UNLOCKED;
-	this->editingRightTicks = portMUX_INITIALIZER_UNLOCKED;
+	editingLeftTicks = xSemaphoreCreateBinary();
+	editingRightTicks = xSemaphoreCreateBinary();
+	xSemaphoreGive(editingLeftTicks);
+	xSemaphoreGive(editingRightTicks);
 	clear();
 	initInterrupts();
 }
@@ -54,14 +56,14 @@ int Encoder::getTicks(WHEEL wheel) {
 }
 
 void Encoder::clear() {
-	portENTER_CRITICAL(&(this->editingLeftTicks));
-	portENTER_CRITICAL(&(this->editingRightTicks));
-	this->leftTicks = 0;
-	this->rightTicks = 0;
-	portEXIT_CRITICAL(&(this->editingRightTicks));
-	portEXIT_CRITICAL(&(this->editingLeftTicks));
-	this->leftDirection = FWD;
-	this->rightDirection = FWD;
+	xSemaphoreTake(editingLeftTicks, (TickType_t) 30);
+	xSemaphoreTake(editingRightTicks, (TickType_t) 30);
+	leftTicks = 0;
+	rightTicks = 0;
+	xSemaphoreGive(editingLeftTicks);
+	xSemaphoreGive(editingRightTicks);
+	leftDirection = FWD;
+	rightDirection = FWD;
 }
 
 void Encoder::initInterrupts() {
@@ -77,19 +79,19 @@ Methods below are only meant to be used as interrupts' callbacks
 *********************************************************************/
 
 void Encoder::rightIncrement() {
-	portENTER_CRITICAL(&(local_encoder->editingRightTicks));
+	xSemaphoreTakeFromISR(local_encoder->editingRightTicks, NULL);
 	if (local_encoder->rightDirection == FWD)
 		local_encoder->rightTicks++;
 	else
 		local_encoder->rightTicks--;
-	portEXIT_CRITICAL(&(local_encoder->editingRightTicks));
+	xSemaphoreGiveFromISR(local_encoder->editingRightTicks, NULL);
 }
 
 void Encoder::leftIncrement() {
-	portENTER_CRITICAL(&(local_encoder->editingLeftTicks));
+	xSemaphoreTakeFromISR(local_encoder->editingLeftTicks, NULL);
 	if (local_encoder->leftDirection == FWD)
 		local_encoder->leftTicks++;
 	else
 		local_encoder->leftTicks--;
-	portEXIT_CRITICAL(&(local_encoder->editingLeftTicks));
+	xSemaphoreGiveFromISR(local_encoder->editingLeftTicks, NULL);
 }

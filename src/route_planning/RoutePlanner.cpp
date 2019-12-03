@@ -1,5 +1,9 @@
 #include "RoutePlanner.h"
 
+RoutePlanner::RoutePlanner(FileLoader* fileLoader) {
+	this->fileLoader = fileLoader;
+}
+
 bool RoutePlanner::sortByOrderNumber(Point* a, Point* b)
 {
 	return (a->orderNumber < b->orderNumber);
@@ -13,11 +17,11 @@ void RoutePlanner::addPoint(std::vector<Point*>& points, double coordX, double c
 
 void RoutePlanner::readFile(std::vector<Point*>& points, std::string fileName)
 {
-	std::ifstream file;
-	file.open(fileName);
+	File file;
+	file = fileLoader->loadFile(fileName);
 	std::string line;
 	int i = 0;
-	while (getline(file,line))
+	while (fileLoader->getLine(file,line))
 	{
 		std::string prefix = "\\rput";
 		if (line.find(prefix) != std::string::npos)
@@ -33,8 +37,7 @@ void RoutePlanner::readFile(std::vector<Point*>& points, std::string fileName)
 			++i;
 		}
 	}
-
-	file.close();
+	fileLoader->closeFile(file);
 }
 
 std::vector<Point*> RoutePlanner::getPath(std::string path)

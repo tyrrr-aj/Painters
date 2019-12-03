@@ -32,6 +32,8 @@ Encoder::Encoder() {
 	xSemaphoreGive(editingLeftTicks);
 	xSemaphoreGive(editingRightTicks);
 	clear();
+	leftDirection = FWD;
+	rightDirection = FWD;
 	initInterrupts();
 }
 
@@ -62,8 +64,6 @@ void Encoder::clear() {
 	rightTicks = 0;
 	xSemaphoreGive(editingLeftTicks);
 	xSemaphoreGive(editingRightTicks);
-	leftDirection = FWD;
-	rightDirection = FWD;
 }
 
 void Encoder::initInterrupts() {

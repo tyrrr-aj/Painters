@@ -21,7 +21,7 @@ void RoutePlanner::readFile(std::vector<Point*>& points, std::string fileName)
 	file = fileLoader->loadFile(fileName);
 	std::string line;
 	int i = 0;
-	while (fileLoader->getLine(file,line))
+	while (fileLoader->getLine(file, &line))
 	{
 		std::string prefix = "\\rput";
 		if (line.find(prefix) != std::string::npos)
@@ -45,7 +45,7 @@ std::vector<Point*> RoutePlanner::getPath(std::string path)
 	std::vector<Point*> points;
 	readFile(points, path);
 	int numberOfPts = points.size();
-
+	
 	Solver solver(points, 10, 10, numberOfPts);
 	solver.solve();
 	

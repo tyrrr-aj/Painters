@@ -1,17 +1,26 @@
 #include "src/motors/motors.h"
 #include "src/encoder/encoder.h"
 
+#include "src/route_planning/RoutePlanner.h"
 #include "src/localization/localization.h"
 #include "src/steering/Control.h"
 
+#include "src/file_loader/file_loader.h"
+
 void setup() {
   Serial.begin(115200);
-  
-//  RoutePlanner routePlanner;
-  std::vector<Point*> path;//routePlanner.getPath("patterns/pattern1.txt");
-  path.push_back(new Point(-1.0, 1.0));
-  path.push_back(new Point(2, 2));
-  path.push_back(new Point(3, 3));
+
+  FileLoader fileLoader;
+  RoutePlanner routePlanner(&fileLoader);
+
+  Serial.println("RoutePlanner created successfully");
+  std::vector<Point*> path = routePlanner.getPath("/pattern1.txt");
+
+  for(int i = 0; i < path.size(); i++) {
+    Serial.print(path[i]->coordX);
+    Serial.print(" ");
+    Serial.println(path[i]->coordX);
+  }
  
   Encoder encoder;
   Motors motors;
@@ -21,7 +30,7 @@ void setup() {
   Steering steering(&motors, &localization);
   Control control(path, steering);
 
-  control.accomplishTrace();
+  //control.accomplishTrace();
 
 }
 

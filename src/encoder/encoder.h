@@ -28,6 +28,8 @@ Code developed in Arduino 1.8.9, on ESP32 DevkitC v4
 
 #include "../../pins.h"
 
+#define ENCODER_MIN_DELAY 40
+
 enum WHEEL {LEFT, RIGHT};
 
 enum DIRECTION {FWD, REV};
@@ -49,6 +51,8 @@ class Encoder {
 		SemaphoreHandle_t editingRightTicks;
 		static void rightIncrement();
 		static void leftIncrement();
+		TickType_t rightLastTickTime;
+		TickType_t leftLastTickTime;
 };
 
 #endif

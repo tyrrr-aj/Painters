@@ -35,20 +35,29 @@ All methods below are private.
 void Localization::updatePosition() {
 	int rightTicks = encoder->getTicks(RIGHT);
 	int leftTicks = encoder->getTicks(LEFT);
+	Serial.print("TICKS: right = ");
+	Serial.print(rightTicks);
+	Serial.print(", left = ");
+	Serial.println(leftTicks);
 	encoder->clear();
+	updateXY(leftTicks, rightTicks);
+	updateRotation(leftTicks, rightTicks);
+}
 	
-	//Update position value
-	
+void Localization::updateXY(int leftTicks, int rightTicks) {	
 	double distanceTravelled = (((double) (leftTicks + rightTicks)) / (2 * TICKS_PER_REV)) * (WHEEL_DIAMETER * M_PI);
 	double xTransition = distanceTravelled * currentPosition.rotation.X;
 	double yTransition = distanceTravelled * currentPosition.rotation.Y;
 
 	currentPosition.position.X += xTransition;
 	currentPosition.position.Y += yTransition;
-	
-	//Update rotation value
-	
-	double rotationAngleInRadians = ((rightTicks - leftTicks) / TICKS_PER_REV * WHEEL_DIAMETER) / WHEELBASE * 2 * M_PI;
+}
+
+void Localization::updateRotation(int leftTicks, int rightTicks) {
+	double rotationAngleInRadians = ((double) (abs(rightTicks) + abs(leftTicks)) / (2 * TICKS_PER_REV) * WHEEL_DIAMETER) / WHEELBASE * 2 * M_PI;
+	rotationAngleInRadians = rightTicks > leftTicks ? rotationAngleInRadians : -rotationAngleInRadians;
+//	Serial.print("angle: ");
+//	Serial.println(rotationAngleInRadians);
 	double xRotation = currentPosition.rotation.X * cos(rotationAngleInRadians) - currentPosition.rotation.Y * sin(rotationAngleInRadians);
 	double yRotation = currentPosition.rotation.X * sin(rotationAngleInRadians) + currentPosition.rotation.Y * cos(rotationAngleInRadians);
 	

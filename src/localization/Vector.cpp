@@ -24,7 +24,7 @@ Vector Vector::getNormalVector()
 
 bool Vector::operator!=(Vector otherVector)
 {
-	double eps = 0.01;
+	double eps = 0.1;
 	if(fabs(this->X - otherVector.X) > eps || fabs(this->Y - otherVector.Y) > eps)
 		return true;
 	else

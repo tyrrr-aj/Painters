@@ -75,21 +75,21 @@ void Steering::rotateChassis()
 	Vector desiredRotation = transitionVector->getNormalVector();
 	
 	Vector rot = localization->getCurrentPosition().rotation;
-	Serial.print("currentRotation: ");
-	Serial.print(rot.X);
-	Serial.print(" ");
-	Serial.println(rot.Y);
-	Serial.print("desiredRotation: ");
-	Serial.print(desiredRotation.X);
-	Serial.print(" ");
-	Serial.println(desiredRotation.Y);
+//	Serial.print("currentRotation: ");
+//	Serial.print(rot.X);
+//	Serial.print(" ");
+//	Serial.println(rot.Y);
+//	Serial.print("desiredRotation: ");
+//	Serial.print(desiredRotation.X);
+//	Serial.print(" ");
+//	Serial.println(desiredRotation.Y);
 	
 	while((rot = localization->getCurrentPosition().rotation) != desiredRotation)
 	{
-		Serial.print(rot.X);
-		Serial.print(" ");
-		Serial.println(rot.Y);
-		delay(5);
+//		Serial.print(rot.X);
+//		Serial.print(" ");
+//		Serial.println(rot.Y);
+		delay(100);
 	}
 	
 	motor->stop();
@@ -103,8 +103,19 @@ void Steering::leadChassis()
 	
 	motor->drive(150);
 	
-	while(localization->getCurrentPosition().position != desiredPosition){
-		delay(5);
+	Serial.print("desired position: ");
+	Serial.print(desiredX);
+	Serial.print(", ");
+	Serial.println(desiredY);
+	
+	Vector loc;
+	
+	while((loc = localization->getCurrentPosition().position) != desiredPosition){
+		Serial.print("current position: ");
+		Serial.print(loc.X);
+		Serial.print(", ");
+		Serial.println(loc.Y);
+		delay(100);
 	}
 	
 	motor->stop();

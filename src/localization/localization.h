@@ -38,10 +38,13 @@ class Localization {
 		
 		Localization(Encoder*);
 		Position getCurrentPosition();
+		
 	private:
 		Encoder* encoder;
 		Position currentPosition;
 		void updatePosition();
+		void updateXY(int leftTicks, int rightTicks);
+		void updateRotation(int leftTicks, int rightTicks);
 };
 
 #endif

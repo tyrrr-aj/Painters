@@ -34,6 +34,8 @@ Encoder::Encoder() {
 	clear();
 	leftDirection = FWD;
 	rightDirection = FWD;
+	rightLastTickTime = 0;
+	leftLastTickTime = 0;
 	initInterrupts();
 }
 
@@ -80,18 +82,26 @@ Methods below are only meant to be used as interrupts' callbacks
 
 void Encoder::rightIncrement() {
 	xSemaphoreTakeFromISR(local_encoder->editingRightTicks, NULL);
-	if (local_encoder->rightDirection == FWD)
-		local_encoder->rightTicks++;
-	else
-		local_encoder->rightTicks--;
+	TickType_t currentTime = xTaskGetTickCountFromISR();
+	if (local_encoder->rightLastTickTime + ENCODER_MIN_DELAY < currentTime) {
+		if (local_encoder->rightDirection == FWD)
+			local_encoder->rightTicks++;
+		else
+			local_encoder->rightTicks--;
+		local_encoder->rightLastTickTime = currentTime;
+	}
 	xSemaphoreGiveFromISR(local_encoder->editingRightTicks, NULL);
 }
 
 void Encoder::leftIncrement() {
 	xSemaphoreTakeFromISR(local_encoder->editingLeftTicks, NULL);
-	if (local_encoder->leftDirection == FWD)
-		local_encoder->leftTicks++;
-	else
-		local_encoder->leftTicks--;
+	TickType_t currentTime = xTaskGetTickCountFromISR();
+	if (local_encoder->leftLastTickTime + ENCODER_MIN_DELAY < currentTime) {
+		if (local_encoder->leftDirection == FWD)
+			local_encoder->leftTicks++;
+		else
+			local_encoder->leftTicks--;
+		local_encoder->leftLastTickTime = currentTime;
+	}
 	xSemaphoreGiveFromISR(local_encoder->editingLeftTicks, NULL);
 }

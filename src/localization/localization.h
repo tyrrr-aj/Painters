@@ -38,7 +38,8 @@ class Localization {
 		
 		Localization(Encoder*);
 		Position getCurrentPosition();
-		
+		Vector getCurrentXY();
+		Vector getCurrentRotation();
 	private:
 		Encoder* encoder;
 		Position currentPosition;

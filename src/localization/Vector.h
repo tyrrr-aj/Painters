@@ -15,6 +15,8 @@ public:
 	double length();
 	Vector getNormalVector();
 	
+	double distance(Vector other);
+	
 	bool operator!=(Vector otherVector);
 };
 

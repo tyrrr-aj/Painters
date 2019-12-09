@@ -31,8 +31,10 @@ void Steering::calculateTransitionVector(Point point)
 	(Point A ----> Point B)
 	*******************************/
 	
-	Position currentPosition = localization->getCurrentPosition();
-	currentVector = new Vector(currentPosition.position.X, currentPosition.position.Y);
+//	Position currentPosition = localization->getCurrentPosition();
+//	currentVector = new Vector(currentPosition.position.X, currentPosition.position.Y);
+	Vector currentXY = localization->getCurrentXY();
+	currentVector = new Vector(currentXY.X, currentXY.Y);
 	
 	double desiredX = point.coordX - currentVector->X;
 	double desiredY = point.coordY - currentVector->Y;
@@ -45,8 +47,9 @@ void Steering::calculateRotation()
 	Create angle object of needed rotation
 	*******************************/
 	
-	Position currentPosition = localization->getCurrentPosition();
-	Vector currentRotation = currentPosition.rotation;
+//	Position currentPosition = localization->getCurrentPosition();
+//	Vector currentRotation = currentPosition.rotation;
+	Vector currentRotation = localization->getCurrentRotation();
 	angle = new Angle (*transitionVector, currentRotation);
 }
 
@@ -74,21 +77,28 @@ void Steering::rotateChassis()
 	
 	Vector desiredRotation = transitionVector->getNormalVector();
 	
-	Vector rot = localization->getCurrentPosition().rotation;
-//	Serial.print("currentRotation: ");
-//	Serial.print(rot.X);
-//	Serial.print(" ");
-//	Serial.println(rot.Y);
-//	Serial.print("desiredRotation: ");
-//	Serial.print(desiredRotation.X);
-//	Serial.print(" ");
-//	Serial.println(desiredRotation.Y);
+	Vector rot = localization->getCurrentRotation();
+	double previousDistance = desiredRotation.distance(rot);
 	
-	while((rot = localization->getCurrentPosition().rotation) != desiredRotation)
-	{
-//		Serial.print(rot.X);
-//		Serial.print(" ");
-//		Serial.println(rot.Y);
+	Serial.print("currentRotation: ");
+	Serial.print(rot.X);
+	Serial.print(" ");
+	Serial.println(rot.Y);
+	Serial.print("desiredRotation: ");
+	Serial.print(desiredRotation.X);
+	Serial.print(" ");
+	Serial.println(desiredRotation.Y);
+	
+//	while((rot = localization->getCurrentPosition().rotation) != desiredRotation)
+	while(desiredRotation.distance(rot) <= previousDistance) {
+		previousDistance = desiredRotation.distance(rot);
+		rot = localization->getCurrentRotation();
+//	while((rot = localization->getCurrentRotation()) != desiredRotation)
+//	{
+		Serial.print("currentRotation: ");
+		Serial.print(rot.X);
+		Serial.print(" ");
+		Serial.println(rot.Y);
 		delay(100);
 	}
 	
@@ -108,9 +118,14 @@ void Steering::leadChassis()
 	Serial.print(", ");
 	Serial.println(desiredY);
 	
-	Vector loc;
+	Vector loc = localization->getCurrentXY();
 	
-	while((loc = localization->getCurrentPosition().position) != desiredPosition){
+	double previousDistance = desiredPosition.distance(loc);
+	
+//	while((loc = localization->getCurrentPosition().position) != desiredPosition){
+	while(desiredPosition.distance(loc) <= previousDistance) {
+		previousDistance = desiredPosition.distance(loc);
+		loc = localization->getCurrentXY();
 		Serial.print("current position: ");
 		Serial.print(loc.X);
 		Serial.print(", ");

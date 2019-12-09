@@ -22,6 +22,10 @@ Vector Vector::getNormalVector()
 	return Vector(this->X / length() , this->Y / length());
 }
 
+double Vector::distance(Vector other) {
+	return (X - other.X) * (X - other.X) + (Y - other.Y) * (Y - other.Y);
+}
+
 bool Vector::operator!=(Vector otherVector)
 {
 	double eps = 0.1;

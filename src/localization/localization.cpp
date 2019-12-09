@@ -28,6 +28,34 @@ Position Localization::getCurrentPosition() {
 	return currentPosition;
 }
 
+Vector Localization::getCurrentXY() {
+	int rightTicks = encoder->getTicks(RIGHT);
+	int leftTicks = encoder->getTicks(LEFT);
+	Serial.print("TICKS: right = ");
+	Serial.print(rightTicks);
+	Serial.print(", left = ");
+	Serial.println(leftTicks);
+	Serial.print("currentRotation: ");
+	Serial.print(currentPosition.rotation.X);
+	Serial.print(", ");
+	Serial.println(currentPosition.rotation.Y);
+	encoder->clear();
+	updateXY(leftTicks, rightTicks);
+	return currentPosition.position;
+}
+
+Vector Localization::getCurrentRotation() {
+	int rightTicks = encoder->getTicks(RIGHT);
+	int leftTicks = encoder->getTicks(LEFT);
+	Serial.print("TICKS: right = ");
+	Serial.print(rightTicks);
+	Serial.print(", left = ");
+	Serial.println(leftTicks);
+	encoder->clear();
+	updateRotation(leftTicks, rightTicks);
+	return currentPosition.rotation;
+}
+
 /*********************************************************************
 All methods below are private.
 *********************************************************************/

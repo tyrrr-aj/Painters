@@ -40,6 +40,7 @@ class Localization {
 		Position getCurrentPosition();
 		Vector getCurrentXY();
 		Vector getCurrentRotation();
+		void clear();
 	private:
 		Encoder* encoder;
 		Position currentPosition;

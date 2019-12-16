@@ -15,7 +15,8 @@ void setup() {
 
   Serial.println("RoutePlanner created successfully");
   std::vector<Point*> path;// = routePlanner.getPath("/pattern1.txt");
-  path.push_back(new Point(1.0, -1.0));
+  path.push_back(new Point(100, 0));
+  path.push_back(new Point(0, 0));
 
   for(int i = 0; i < path.size(); i++) {
     Serial.print(path[i]->coordX);
@@ -36,6 +37,6 @@ void setup() {
 }
 
 void loop() {
-
+  delay(100);
 }
   

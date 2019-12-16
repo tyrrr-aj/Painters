@@ -16,9 +16,9 @@ double Angle::getRotation()
 {
 	double cosinus = rotationCosinus();
 	if(rotationDirection() == angle_direction::DIRECTION::LEFT)
-		return acos(cosinus);
+		return 1;
 	else
-		return -acos(cosinus);
+		return -1;
 }
 
 Angle Angle::operator=(Angle angle)

@@ -3,8 +3,9 @@
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
 #include <BLEServer.h>
+#include <BLE2902.h>
 
-#define SERVICE_UUID  "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
 static BLEUUID serviceUUID(SERVICE_UUID);
@@ -15,8 +16,10 @@ int scanTime = 3; //In seconds
 BLEScan* pBLEScan;
 
 BLECharacteristic *pCharacteristic;
+BLERemoteCharacteristic* global_characteristic;
 
 bool doConnect = false;
+bool valueChanged = false;
 
 void connect(BLEAdvertisedDevice* advertisedDevice);
 
@@ -24,18 +27,17 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
     void onResult(BLEAdvertisedDevice advertisedDevice) {
       Serial.printf("Advertised Device: %s \n", advertisedDevice.toString().c_str());
       //if (advertisedDevice.haveServiceUUID() && advertisedDevice.isAdvertisingService(serviceUUID))
-      if (advertisedDevice.getName() == "ESP32")
+      if (advertisedDevice.getName() == "PaintersServer")
       {
         BLEDevice::getScan()->stop();
         Serial.println("ESP found");
         myDevice = new BLEAdvertisedDevice(advertisedDevice);
         //connect(&advertisedDevice);
         doConnect = true;
-        Serial.println("Do Connect setted to true");
       }
       else
       {
-        Serial.println("  this is not ESP32");   
+        Serial.println("this is not ESP32");   
       }
     }
 };
@@ -65,6 +67,24 @@ void scan()
   
 }
 
+void notifyCallback(BLERemoteCharacteristic* characteristic, uint8_t* pData, size_t length, bool isNotify) {
+  valueChanged = true;
+}
+
+void registerCallback(BLEClient* pClient) {
+  BLERemoteService* pRemoteService = pClient->getService(SERVICE_UUID);
+  global_characteristic = pRemoteService->getCharacteristic(CHARACTERISTIC_UUID);
+  if (global_characteristic->canNotify()) {
+    Serial.println("Characteristic suitable for notification");
+    const uint8_t notifyOn[] = {0x1, 0x0};
+    global_characteristic->getDescriptor(BLEUUID((uint16_t)0x2902))->writeValue((uint8_t*)notifyOn, 2, true);
+    global_characteristic->registerForNotify(notifyCallback);
+  }
+  else {
+    Serial.println("Remote characteristic unnotifiable");
+  }
+}
+
 void connect(BLEAdvertisedDevice* device)
 {
   Serial.println("Connecting1...");
@@ -72,6 +92,7 @@ void connect(BLEAdvertisedDevice* device)
   BLEClient*  pClient  = BLEDevice::createClient();
   pClient->connect(device);
   Serial.println("Connected to the server ");
+  registerCallback(pClient);
 }
 
 void createServer()
@@ -90,8 +111,12 @@ void createServer()
   pCharacteristic = pService->createCharacteristic(
                                          CHARACTERISTIC_UUID,
                                          BLECharacteristic::PROPERTY_READ |
-                                         BLECharacteristic::PROPERTY_WRITE
+                                         BLECharacteristic::PROPERTY_WRITE |
+                                         BLECharacteristic::PROPERTY_NOTIFY |
+                                         BLECharacteristic::PROPERTY_INDICATE
                                        );
+
+  pCharacteristic->addDescriptor(new BLE2902());
 
   pCharacteristic->setValue("Hello World says Neil");
   pService->start();
@@ -108,16 +133,15 @@ int value;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
+
+  Serial.println("[SERVER] Attempting to create server");
+  createServer();
+  Serial.println("[SERVER] Server created");
+  
   //Serial.println("Scanning...");
   scan();
   Serial.println("Scan ended");
-  if(!doConnect)
-  {
-    Serial.println("[SERVER] Attempting to create server");
-    createServer();
-    Serial.println("[SERVER] Server created");
-  }
-  else
+  if(doConnect)
   {
     Serial.println("[CLIENT] Attemting to connect to device");
     connect(myDevice);
@@ -129,19 +153,21 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Serial.print("Inside loop");
+  //Serial.println("Inside loop");
   
   if(!doConnect){
  
      Serial.printf("*** NOTIFY: %d ***\n", pCharacteristic->getValue());
-     pCharacteristic->setValue(value); 
+     pCharacteristic->setValue((uint8_t*)&value, 4); 
      pCharacteristic->notify(); 
      //pCharacteristic-&gt;indicate(); 
      ++value; 
   }
-  else{
-     
+  else if(valueChanged){
+     Serial.print("Read characteristic value: ");
+     Serial.println(global_characteristic->readValue().c_str());
+     valueChanged = false;
   }
   
-  delay(1000);
+  delay(500);
 }

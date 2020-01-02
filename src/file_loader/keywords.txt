@@ -1,0 +1,3 @@
+FileLoader		KEYWORD1
+loadFile		KEYWORD2
+closeFile		KEYWORD2

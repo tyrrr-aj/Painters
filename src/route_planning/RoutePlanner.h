@@ -3,7 +3,7 @@
 #include <algorithm> 
 #include <cstdlib>
 
-#include "Point.h"
+#include "../geometry/Point.h"
 #include "Solver.h"
 #include "../file_loader/file_loader.h"
 

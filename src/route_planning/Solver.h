@@ -4,7 +4,7 @@
 #include <vector>
 #include <limits.h>
 
-#include "Point.h"
+#include "../geometry/Point.h"
 
 class Solver
 {

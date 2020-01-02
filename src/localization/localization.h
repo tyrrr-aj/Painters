@@ -20,7 +20,7 @@ Code developed in Arduino 1.8.9, on ESP32 DevkitC v4
 #include <math.h>
 
 #include "../encoder/encoder.h"
-#include "Vector.h"
+#include "../geometry/Vector.h"
 
 // remember to always adjust this values to your robot!
 #define WHEEL_DIAMETER 6.0

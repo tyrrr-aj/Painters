@@ -3,7 +3,7 @@
 
 #include "src/route_planning/RoutePlanner.h"
 #include "src/localization/localization.h"
-#include "src/steering/Control.h"
+#include "src/control/Control.h"
 
 #include "src/file_loader/file_loader.h"
 

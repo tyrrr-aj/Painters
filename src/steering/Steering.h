@@ -3,7 +3,7 @@
 
 #include "Angle.h"
 
-#include "../route_planning/Point.h"
+#include "../geometry/Point.h"
 #include "../motors/motors.h"
 #include "../localization/localization.h"
 

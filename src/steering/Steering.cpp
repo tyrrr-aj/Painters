@@ -36,8 +36,8 @@ void Steering::calculateTransitionVector(Point point)
 	Vector currentXY = localization->getCurrentXY();
 	currentVector = new Vector(currentXY.X, currentXY.Y);
 	
-	double desiredX = point.coordX - currentVector->X;
-	double desiredY = point.coordY - currentVector->Y;
+	double desiredX = point.X - currentVector->X;
+	double desiredY = point.Y - currentVector->Y;
 	transitionVector = new Vector(desiredX, desiredY);
 }
 

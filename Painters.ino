@@ -1,11 +1,10 @@
 #include "src/motors/motors.h"
 #include "src/encoder/encoder.h"
-
 #include "src/route_planning/RoutePlanner.h"
 #include "src/localization/localization.h"
 #include "src/control/Control.h"
-
 #include "src/file_loader/file_loader.h"
+#include "src/geometry/Point.h"
 
 void setup() {
   Serial.begin(115200);
@@ -18,9 +17,9 @@ void setup() {
   path.push_back(new Point(1.0, -1.0));
 
   for(int i = 0; i < path.size(); i++) {
-    Serial.print(path[i]->coordX);
+    Serial.print(path[i]->X);
     Serial.print(" ");
-    Serial.println(path[i]->coordY);
+    Serial.println(path[i]->Y);
   }
  
   Encoder encoder;
@@ -29,7 +28,9 @@ void setup() {
   
   Localization localization(&encoder);
   Steering steering(&motors, &localization);
-  Control control(path, steering);
+  BLE_communicator communicator;
+  Collision_avoidance collision_avoidance(&communicator, &steering, &localization);
+  Control control(path, &steering, &collision_avoidance);
 
   control.accomplishTrace();
 

@@ -4,7 +4,7 @@
 #include <vector>
 #include <limits.h>
 
-#include "../geometry/Point.h"
+#include "RpPoint.h"
 
 class Solver
 {
@@ -13,22 +13,22 @@ private:
 	double Y;
 	double radius;
 	int numberOfPts;
-	std::vector<Point*> points;
+	std::vector<RpPoint*> points;
 
 	bool allCovered = false;
 	int currentOrderNumber;
 
-	Point* pickFirst(std::vector<Point*>& points);
+	RpPoint* pickFirst(std::vector<RpPoint*>& points);
 
-	void pickArea(Point point, std::vector<Point*>& areaPoints);
-	void setDistances(Point point);
-	Point* findNext(Point* point, std::vector<Point*> areaPoints);
+	void pickArea(RpPoint point, std::vector<RpPoint*>& areaPoints);
+	void setDistances(RpPoint point);
+	RpPoint* findNext(RpPoint* point, std::vector<RpPoint*> areaPoints);
 
-	void distributeOrder(Point point, std::vector<Point*>& areaPoints);
-	void distributeOrder1(Point* point, std::vector<Point*>& areaPoints);
+	void distributeOrder(RpPoint point, std::vector<RpPoint*>& areaPoints);
+	void distributeOrder1(RpPoint* point, std::vector<RpPoint*>& areaPoints);
 public:
 	Solver();
-	Solver(std::vector<Point*> points, int X, int Y, int N);
+	Solver(std::vector<RpPoint*> points, int X, int Y, int N);
 
 	void solve();
 };

@@ -1,20 +1,23 @@
 #include "Control.h"
 
-Control::Control(std::vector<Point*> path, Steering oneRobot)
+Control::Control(std::vector<Point*> path, Steering* oneRobot, Collision_avoidance* collision_avoidance)
 {
 	this->path = path;
 	this->steering = oneRobot;
+	this->collision_avoidance = collision_avoidance;
 }
 
-void Control::moveRobot(Steering steering, Point point)
+void Control::moveRobot(Point point)
 {
-	steering.driveTo(point);
+	steering->driveTo(point);
 }
 
 void Control::accomplishTrace()
 {
-	for (int i = 0; i < path.size(); ++i)
+	collision_avoidance->init(path);
+	for (std::vector<Point*>::iterator current_dest = path.begin(); current_dest != path.end(); ++current_dest)
 	{
-		moveRobot(steering, *path[i]);
+		collision_avoidance->nextDestination(current_dest);
+		moveRobot(**current_dest);
 	}
 }

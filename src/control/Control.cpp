@@ -17,7 +17,8 @@ void Control::accomplishTrace()
 	collision_avoidance->init(path);
 	for (std::vector<Point*>::iterator current_dest = path.begin(); current_dest != path.end(); ++current_dest)
 	{
-		collision_avoidance->nextDestination(current_dest);
+		collision_avoidance->newDestination(current_dest);
 		moveRobot(**current_dest);
+		collision_avoidance->destinationReached();
 	}
 }

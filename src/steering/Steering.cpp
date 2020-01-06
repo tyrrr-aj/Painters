@@ -9,10 +9,12 @@ Steering::Steering(Motors* motor, Localization* localization)
 void Steering::driveTo(Point point)
 {
 	calculateTransitionVector(point);
-	calculateRotation();
-	
+
 	rotateChassis();
+	delay(1200);
+	
 	leadChassis();
+	delay(1200);
 }
 
 
@@ -31,26 +33,12 @@ void Steering::calculateTransitionVector(Point point)
 	(Point A ----> Point B)
 	*******************************/
 	
-//	Position currentPosition = localization->getCurrentPosition();
-//	currentVector = new Vector(currentPosition.position.X, currentPosition.position.Y);
+	desiredPosition = new Vector(point.coordX, point.coordY);
+	
 	Vector currentXY = localization->getCurrentXY();
-	currentVector = new Vector(currentXY.X, currentXY.Y);
-	
-	double desiredX = point.X - currentVector->X;
-	double desiredY = point.Y - currentVector->Y;
-	transitionVector = new Vector(desiredX, desiredY);
-}
-
-void Steering::calculateRotation()
-{
-	/*******************************
-	Create angle object of needed rotation
-	*******************************/
-	
-//	Position currentPosition = localization->getCurrentPosition();
-//	Vector currentRotation = currentPosition.rotation;
-	Vector currentRotation = localization->getCurrentRotation();
-	angle = new Angle (*transitionVector, currentRotation);
+	double xTransition = desiredPosition->X - currentXY.X;
+	double yTransition = desiredPosition->Y - currentXY.Y;
+	transitionVector = new Vector(xTransition, yTransition);
 }
 
 /*********************************************************************
@@ -58,80 +46,52 @@ Methods which PRACTICALLY are moving chassis
 *********************************************************************/
 
 void Steering::rotateChassis()
-{	
-	double rotationAngle = angle->getRotation();
+{
+	Vector currentRotation = localization->getCurrentRotation();
+	Vector desiredRotation = transitionVector->getNormalVector();
 	
-	Serial.print("rotationAngle: ");
-	Serial.println(rotationAngle);
-	
-	if (rotationAngle > 0)
+	//Resolving turning direction by using vector product
+	double vectorProduct = currentRotation.X * desiredRotation.Y
+		- currentRotation.Y * desiredRotation.X;
+
+	if (vectorProduct >= 0)
 	{
+		//Turn chassis anticlockwise
 		motor->rightMotor(100);
 		motor->leftMotor(-100);
 	}
 	else
 	{
+		//Turn chassis clockwise
 		motor->leftMotor(100);
 		motor->rightMotor(-100);
 	}
-	
-	Vector desiredRotation = transitionVector->getNormalVector();
-	
-	Vector rot = localization->getCurrentRotation();
-	double previousDistance = desiredRotation.distance(rot);
-	
-	Serial.print("currentRotation: ");
-	Serial.print(rot.X);
-	Serial.print(" ");
-	Serial.println(rot.Y);
-	Serial.print("desiredRotation: ");
-	Serial.print(desiredRotation.X);
-	Serial.print(" ");
-	Serial.println(desiredRotation.Y);
-	
-//	while((rot = localization->getCurrentPosition().rotation) != desiredRotation)
-	while(desiredRotation.distance(rot) <= previousDistance) {
-		previousDistance = desiredRotation.distance(rot);
-		rot = localization->getCurrentRotation();
-//	while((rot = localization->getCurrentRotation()) != desiredRotation)
-//	{
-		Serial.print("currentRotation: ");
-		Serial.print(rot.X);
-		Serial.print(" ");
-		Serial.println(rot.Y);
+
+	double previousDistance = desiredRotation.distance(currentRotation);
+
+	while (desiredRotation.distance(currentRotation) <= previousDistance) {
+		previousDistance = desiredRotation.distance(currentRotation);
+		currentRotation = localization->getCurrentRotation();
 		delay(100);
 	}
-	
+
 	motor->stop();
 }
 
 void Steering::leadChassis()
 {
-	double desiredX = transitionVector->X - currentVector->X;
-	double desiredY = transitionVector->Y - currentVector->Y;
-	Vector desiredPosition(desiredX, desiredY);
+	Vector currentXY = localization->getCurrentXY();
+
+	motor->drive(100);
+
+	double previousDistance = desiredPosition->distance(currentXY);
 	
-	motor->drive(150);
-	
-	Serial.print("desired position: ");
-	Serial.print(desiredX);
-	Serial.print(", ");
-	Serial.println(desiredY);
-	
-	Vector loc = localization->getCurrentXY();
-	
-	double previousDistance = desiredPosition.distance(loc);
-	
-//	while((loc = localization->getCurrentPosition().position) != desiredPosition){
-	while(desiredPosition.distance(loc) <= previousDistance) {
-		previousDistance = desiredPosition.distance(loc);
-		loc = localization->getCurrentXY();
-		Serial.print("current position: ");
-		Serial.print(loc.X);
-		Serial.print(", ");
-		Serial.println(loc.Y);
+	while (desiredPosition->distance(currentXY) <= previousDistance)
+	{
+		previousDistance = desiredPosition->distance(currentXY);
+		currentXY = localization->getCurrentXY();
 		delay(100);
 	}
-	
+
 	motor->stop();
 }

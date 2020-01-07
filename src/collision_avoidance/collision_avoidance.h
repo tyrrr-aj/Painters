@@ -11,11 +11,9 @@
 #define PRIVATE_RADIUS 10.0 // maximum distance between robots which causes collision, unit must be the same as in path file
 
 namespace collision_avoidance {
-	enum Robots {ME, PARTNER, NEITHER};
+	enum Robot {ME, PARTNER, NEITHER};
 	enum State {DRIVING, WAITING, DRIVING_WHILE_PARTNER_WAITS};
 }
-
-enum ResponseToProposal(AGREE, REJECT);
 
 class Collision_avoidance {
 	public:
@@ -32,16 +30,16 @@ class Collision_avoidance {
 		std::vector<Point*> path;
 		std::vector<Point*>::iterator current_destination;
 		int steps_to_free_way;
-		State state;
+		collision_avoidance::State state;
 
 		void reactToPartnersCourseChange(Point partners_position, Point partners_destination);
 		void reactToCollisionSpottedMessage(Point partners_position, Point partners_destination);
 		void reactToProposalResponse(ResponseToProposal response);
 		void reactToFreeWayAnnouncement();
 
-		bool checkIfWillCollide(Point partners_position, Point partners_destination);
+		bool checkIfPathsAreCrossing(Point partners_position, Point partners_destination);
 		void signalCollision();
-		Robot checkWhoShouldWait(int partner_number_of_steps_to_free_way);
+		collision_avoidance::Robot checkWhoShouldWait(int partner_number_of_steps_to_free_way);
 		int calculateNumberOfStepsToFreeWay(Point partners_position, Point partners_destination);
 		void stopToGiveWay();
 		void moveToGiveWay(Point partners_position, Point partners_destination);

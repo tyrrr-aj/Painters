@@ -8,11 +8,19 @@
 #include <BLEServer.h>
 #include <BLE2902.h>
 
+#include <string>
+
 #include "../geometry/Point.h"
 #include "../collision_avoidance/collision_avoidance.h"
 
-#define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-#define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+const char* SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b\0";
+
+enum ResponseToProposal {AGREE, REJECT};
+
+typedef std::function<void(Point, Point)> newCourseCallback;
+typedef std::function<void(Point, Point)> collisionSpottedCallback;
+typedef std::function<void(ResponseToProposal)> responseToProposalCallback;
+typedef std::function<void()> freeWayCallback;
 
 class BLE_communicator
 {
@@ -23,10 +31,10 @@ class BLE_communicator
         BLE_communicator();
         void setUpCommunication();
 
-        void registerNewCourseCallback(void (Collision_avoidance::*callback)(Point, Point));
-        void registerCollisionSpottedCallback(void (Collision_avoidance::*callback)(Point, Point));
-        void registerGiveWayCallback(void (Collision_avoidance::*callback)());
-        void registerFreeWayCallback(void (Collision_avoidance::*callback)());
+        void registerNewCourseCallback(newCourseCallback callback);
+        void registerCollisionSpottedCallback(collisionSpottedCallback callback);
+        void registerResponseToProposalCallback(responseToProposalCallback callback);
+        void registerFreeWayCallback(freeWayCallback callback);
 
         void announceNewCourse(Point position, Point destination);
         void signalCollision(Point ownPosition, Point ownDestination);

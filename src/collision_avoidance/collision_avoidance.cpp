@@ -11,10 +11,12 @@ Collision_avoidance::Collision_avoidance(BLE_communicator* communicator, Steerin
 }
 
 void Collision_avoidance::init(std::vector<Point*> path) {
+	using namespace std::placeholders;
 	communicator->setUpCommunication();
-	communicator->registerNewCourseCallback(reactToPartnersCourseChange);
-	communicator->registerCollisionSpottedCallback(reactToCollisionSpottedMessage);
-	communicator->registerGiveWayCallback(reactToGiveWayMessage);
+	communicator->registerNewCourseCallback(std::bind(&Collision_avoidance::reactToPartnersCourseChange, this, _1, _2));
+	communicator->registerCollisionSpottedCallback(std::bind(&Collision_avoidance::reactToCollisionSpottedMessage, this, _1, _2));
+	communicator->registerResponseToProposalCallback(std::bind(&Collision_avoidance::reactToProposalResponse, this, _1));
+	communicator->registerFreeWayCallback(std::bind(&Collision_avoidance::reactToFreeWayAnnouncement, this))
 	this->path = path;
 }
 
@@ -36,7 +38,7 @@ void Collision_avoidance::destinationReached() {
 /*********************** CALLBACKS ****************************/
 
 void Collision_avoidance::reactToPartnersCourseChange(Point partners_position, Point partners_destination) {
-	if (checkIfWillCollide(Point(localization->getCurrentXY()), **current_destination, partners_position, partners_destination)) {
+	if (checkIfPathsAreCrossing(Point(localization->getCurrentXY()), **current_destination, partners_position, partners_destination)) {
 		signalCollision();
 		int partners_number_of_steps_to_free_way = communicator->waitForProposal();
 		switch (checkWhoShouldWait(partners_number_of_steps_to_free_way)) {
@@ -78,8 +80,12 @@ void Collision_avoidance::reactToFreeWayAnnouncement() {
 
 /******************** PRIVATE METHODS *************************/
 
-bool Collision_avoidance::checkIfWillCollide(Point first_robot_position, Point first_robot_destination, Point second_robot_position, Point second_robot_destination) {
-	return lines::getDistance(first_robot_position, first_robot_destination, second_robot_position, partners_destination) < PRIVATE_RADIUS;
+bool Collision_avoidance::checkIfPathsAreCrossing(Point first_robot_position, Point first_robot_destination, Point second_robot_position, Point second_robot_destination) {
+	return lines::getDistanceBetweenLines(first_robot_position, first_robot_destination, second_robot_position, partners_destination) < PRIVATE_RADIUS;
+}
+
+bool Collision_avoidance::checkForDirectCollision(Point moving_robot_position, Point moving_robot_destination, Point second_robot_position) {
+	return lines::getDistanceBeteenPointAndLine(second_robot_position, moving_robot_position, moving_robot_destination) < PRIVATE_RADIUS;
 }
 
 void Collision_avoidance::signalCollision() {
@@ -107,7 +113,10 @@ int Collision_avoidance::calculateNumberOfStepsToFreeWay(Point partners_position
 			std::vector<Point*>::iterator des = std::next(current_destination, 1);
 			des != path.end();
 			pos++, des++, number_of_steps++) {
-		if (!checkIfWillCollide(**pos, **des, partners_position, partners_destination)) {
+		if (checkForDirectCollision(**pos, **des, partners_position)) {
+			return -1;
+		}
+		if (!checkIfPathsAreCrossing(**pos, **des, partners_position, partners_destination)) {
 			return number_of_steps;
 		}
 	}
@@ -120,5 +129,8 @@ void Collision_avoidance::stopToGiveWay() {
 }
 
 void Collision_avoidance::moveToGiveWay(Point partners_position, Point partners_destination) {
-	lines.findOptimalBypassPoint(Point(localization->getCurrentXY), **current_destination, partners_position, partners_destination)
+	Point bypass_point = lines.findOptimalBypassPoint(Point(localization->getCurrentXY), **current_destination, partners_position, partners_destination)
+	steering->driveTo(bypass_point);
+	communicator->announceFreeWay();
+	steering->finishInterruptedTask(**current_destination);
 }

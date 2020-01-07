@@ -46,8 +46,8 @@ int BLE_communicator::waitForProposal() {
     // block until partner invokes propose(), then return value he has sent
 }
 
-void registerGiveWayCallback() {
-    // make sure that provided function will be called each time partner invokes his askToGiveWay()
+void registerResponseToProposalCallback() {
+    // make sure that provided function will be called each time partner invokes his respondToProposal()
 }
 
 void registerFreeWayCallback(void (Collision_avoidance::*callback)()) {

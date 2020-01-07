@@ -4,6 +4,7 @@ Steering::Steering(Motors* motor, Localization* localization)
 {
 	this->motor = motor;
 	this->localization = localization;
+	taskAlreadyDone = false;
 }
 
 void Steering::driveTo(Point point)
@@ -15,8 +16,24 @@ void Steering::driveTo(Point point)
 	
 	leadChassis();
 	delay(1200);
+
+	taskAlreadyDone = false;
+	motor->unfreeze();
 }
 
+void Steering::pause() {
+	motor->pause();
+}
+
+void Steering::resume() {
+	motor->resume();
+}
+
+void Steering::finishInterruptedTask(Point destination) {
+	driveTo(destination);
+	motor->freeze();
+	taskAlreadyDone = true;
+}
 
 /*********************************************************************
 All methods below are private.
@@ -57,19 +74,19 @@ void Steering::rotateChassis()
 	if (vectorProduct >= 0)
 	{
 		//Turn chassis anticlockwise
-		motor->rightMotor(100);
-		motor->leftMotor(-100);
+		motor->rightMotor(BASE_SPEED);
+		motor->leftMotor(-BASE_SPEED);
 	}
 	else
 	{
 		//Turn chassis clockwise
-		motor->leftMotor(100);
-		motor->rightMotor(-100);
+		motor->leftMotor(BASE_SPEED);
+		motor->rightMotor(-BASE_SPEED);
 	}
 
 	double previousDistance = desiredRotation.distance(currentRotation);
 
-	while (desiredRotation.distance(currentRotation) <= previousDistance) {
+	while (desiredRotation.distance(currentRotation) <= previousDistance && !taskAlreadyDone) {
 		previousDistance = desiredRotation.distance(currentRotation);
 		currentRotation = localization->getCurrentRotation();
 		delay(100);
@@ -82,11 +99,11 @@ void Steering::leadChassis()
 {
 	Vector currentXY = localization->getCurrentXY();
 
-	motor->drive(100);
+	motor->drive(BASE_SPEED);
 
 	double previousDistance = desiredPosition->distance(currentXY);
 	
-	while (desiredPosition->distance(currentXY) <= previousDistance)
+	while (desiredPosition->distance(currentXY) <= previousDistance && !taskAlreadyDone)
 	{
 		previousDistance = desiredPosition->distance(currentXY);
 		currentXY = localization->getCurrentXY();

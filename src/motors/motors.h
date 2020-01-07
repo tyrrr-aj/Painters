@@ -41,13 +41,13 @@ class Motors {
 		void stop();
 		void rightMotor(int speed);
 		void leftMotor(int speed);
+		void addEncoder(Encoder*);
+	
+	private:
 		void rightCoast();
 		void leftCoast();
 		void rightStop();
 		void leftStop();
-		void addEncoder(Encoder*);
-	
-	private:
 		void rightFwd(uint8_t speed);
 		void leftFwd(uint8_t speed);
 		void rightRev(uint8_t speed);

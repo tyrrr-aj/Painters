@@ -23,7 +23,7 @@ void setup() {
   }
  
   Encoder encoder;
-  Motors motors;
+  PausableMotors motors;
   motors.addEncoder(&encoder);
   
   Localization localization(&encoder);

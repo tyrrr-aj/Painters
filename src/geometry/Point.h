@@ -5,10 +5,13 @@
 
 class Point {
     public:
+        Point() {}
         Point(double X, double Y);
         Point(Vector v);
         double X;
         double Y;
+
+        void operator=(Point other);
         
 };
 

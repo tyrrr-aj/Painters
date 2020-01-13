@@ -9,3 +9,8 @@ Point::Point(Vector v) {
     this->X = v.X;
     this->Y = v.Y;
 }
+
+void Point::operator=(Point other){
+    this->X = other.X;
+    this->Y = other.Y;
+}

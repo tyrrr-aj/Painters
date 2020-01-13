@@ -73,8 +73,6 @@ void Encoder::initInterrupts() {
 	pinMode(RIGHT_ENC, INPUT_PULLUP);
 	attachInterrupt(digitalPinToInterrupt(LEFT_ENC), leftIncrement, FALLING);
 	attachInterrupt(digitalPinToInterrupt(RIGHT_ENC), rightIncrement, FALLING);
-	//attachInterrupt(digitalPinToInterrupt(LEFT_ENC), leftIncrement, RISING);
-	// attachInterrupt(digitalPinToInterrupt(RIGHT_ENC), rightIncrement, RISING);
 }
 
 /*********************************************************************

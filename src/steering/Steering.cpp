@@ -1,6 +1,6 @@
 #include "Steering.h"
 
-Steering::Steering(Motors* motor, Localization* localization)
+Steering::Steering(PausableMotors* motor, Localization* localization)
 {
 	this->motor = motor;
 	this->localization = localization;
@@ -50,7 +50,7 @@ void Steering::calculateTransitionVector(Point point)
 	(Point A ----> Point B)
 	*******************************/
 	
-	desiredPosition = new Vector(point.coordX, point.coordY);
+	desiredPosition = new Vector(point.X, point.Y);
 	
 	Vector currentXY = localization->getCurrentXY();
 	double xTransition = desiredPosition->X - currentXY.X;
@@ -83,14 +83,36 @@ void Steering::rotateChassis()
 		motor->leftMotor(BASE_SPEED);
 		motor->rightMotor(-BASE_SPEED);
 	}
-
-	double previousDistance = desiredRotation.distance(currentRotation);
-
-	while (desiredRotation.distance(currentRotation) <= previousDistance && !taskAlreadyDone) {
-		previousDistance = desiredRotation.distance(currentRotation);
+/*
+	Vector previousRotation = currentRotation;
+	Vector lastDifference = currentRotation - previousRotation;
+	while (desiredRotation.distance((currentRotation + lastDifference).getNormalVector())
+		<= desiredRotation.distance(currentRotation)
+		&& !taskAlreadyDone) {
+		previousRotation = currentRotation;
 		currentRotation = localization->getCurrentRotation();
-		delay(100);
+		lastDifference = currentRotation - previousRotation;
+		*/
+
+	Serial.println("");
+	Serial.println("************************************************************");
+	Serial.println("");
+
+	//double previousDistance = desiredRotation.distance(currentRotation);
+
+	while (currentRotation != desiredRotation && !taskAlreadyDone) {
+		delay(30);
+		//previousDistance = desiredRotation.distance(currentRotation);
+		currentRotation = localization->getCurrentRotation();
+		Serial.print("currentRotation: ");
+		Serial.print(currentRotation.X);
+		Serial.print(", ");
+		Serial.println(currentRotation.Y);
 	}
+
+	Serial.println("");
+	Serial.println("****************************************************************");
+	Serial.println("");
 
 	motor->stop();
 }

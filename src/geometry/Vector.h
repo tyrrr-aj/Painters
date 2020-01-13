@@ -18,6 +18,8 @@ public:
 	double distance(Vector other);
 	
 	bool operator!=(Vector otherVector);
+	Vector operator+(Vector other) const;
+	Vector operator-(Vector other) const;
 };
 
 #endif

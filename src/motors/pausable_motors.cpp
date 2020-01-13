@@ -1,7 +1,6 @@
 #include "pausable_motors.h"
 
 PausableMotors::PausableMotors() {
-	Motors::Motors();
     isPaused = false;
 }
 

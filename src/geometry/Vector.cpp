@@ -34,3 +34,13 @@ bool Vector::operator!=(Vector otherVector)
 	else
 		return false;
 }
+
+Vector Vector::operator+(Vector other) const {
+	Vector add(this->X + other.X, this->Y + other.Y);
+	return add;
+}
+
+Vector Vector::operator-(Vector other) const {
+	Vector subtract(other.X - this->X, other.Y - this->Y);
+	return subtract;
+}

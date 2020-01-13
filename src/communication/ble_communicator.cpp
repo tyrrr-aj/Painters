@@ -1,11 +1,18 @@
 #include "ble_communicator.h"
 
+/*********************** INITIALIZING METHODS ****************************/
+
 BLE_communicator::BLE_communicator() {
 
 }
 
+BLE_communicator::BLE_communicator(Collision_avoidance* avoidance) {
+	this->avoidance = avoidance;
+}
+
 void BLE_communicator::setUpCommunication() {
     // create servers and clients, establish connections
+	
 	Serial.println("[SERVER] Attempting to create server");
 	createServer();
 	Serial.println("[SERVER] Server created");
@@ -18,95 +25,164 @@ void BLE_communicator::setUpCommunication() {
 		connect();
 		Serial.println("[CLIENT] Conncected to the server");
 	}
+
 }
 
-void BLE_communicator::registerNewCourseCallback(void (Collision_avoidance::*callback)(Point, Point)) {
-    // make sure that provided function will be called each time partner invokes his announceNewCourse()
-}
+
+/*********************** BLUETOOTH NOTIFYING METHODS ****************************/
+
 
 void BLE_communicator::announceNewCourse(Point position, Point destination) {
     // pass provided coordinates to partner, partner should invoke it's newCourseCalback()
 	
+	int notifyType = 51;
+	double value = hashTwoPoints(position, destination);
+	value += (double) notifyType;
 	
-}
-
-void BLE_communicator::registerCollisionSpottedCallback(void (Collision_avoidance::*callback)(Point, Point)) {
-    // make sure that provided function will be called each time partner invokes his signalCollision()
-}
+	pCharacteristic->setValue(value);
+	pCharacteristic->notify();
+}                                                    
 
 void BLE_communicator::signalCollision(Point ownPosition, Point ownDestination) {
     // pass provided coordinates to partner, partner should invoke it's collisionSpottedCallback()
+	
+	int notifyType = 52;
+	double value = hashTwoPoints(ownPosition, ownDestination);
+	value += (double) notifyType;
+	
+	pCharacteristic->setValue(value);
+	pCharacteristic->notify();
 }
 
 void BLE_communicator::propose(int number_of_steps) {
     // pass given number to awaiting partner
-}
-
-int BLE_communicator::waitForProposal() {
-    // block until partner invokes propose(), then return value he has sent
-}
-
-void registerResponseToProposalCallback() {
-    // make sure that provided function will be called each time partner invokes his respondToProposal()
-}
-
-void registerFreeWayCallback(void (Collision_avoidance::*callback)()) {
-    // make sure that provided function will be called each time partner invokes his announceFreeWay()
-}
-
-void BLE_communicator::announceFreeWay() {
-    // make sure partner invokes his freeWayAnnouncementCallback()
+	
+	int notifyType = 53;
+	double value = (double) (100 * number_of_steps);
+	value += (double) notifyType;
+	
+	pCharacteristic->setValue(value);
+	pCharacteristic->notify();
 }
 
 void BLE_communicator::respondToProposal(ResponseToProposal response) {
     // make sure partner will call his proposalResponseCallback()
+	
+	//TODO
+}
+
+void BLE_communicator::announceFreeWay() {
+    // make sure partner invokes his freeWayAnnouncementCallback()
+	
+	int notifyType = 55;
+	double value = (double) notifyType;
+	
+	pCharacteristic->setValue(value);
+	pCharacteristic->notify();
+}
+
+void BLE_communicator::listen() {
+	while(true){
+		if(valueChanged){
+			double receivedData = global_characteristic->readValue();
+			long long message = (long long) receivedData;
+			
+			int notifyType = message % 100;
+			
+			switch(notifyType){
+				case 51:
+					std::vector<Point> course = makeTwoPoints(message);
+					Point position = course[0];
+					Point destination = course[1];
+					
+					Serial.println("Received new partner's course:");
+					Serial.print("(X,Y) = (");
+					Serial.print(position.X.c_str());
+					Serial.print(", ");
+					Serial.print(position.Y.c_str());
+					Serial.println(")");
+					
+					Serial.print("(X,Y) = (");
+					Serial.print(destination.X.c_str());
+					Serial.print(", ");
+					Serial.print(destination.Y.c_str());
+					Serial.println(")");
+					
+					avoidance->reactToPartnersCourseChange(position, destination);
+				break;
+				case 52:
+					std::vector<Point> course = makeTwoPoints(message);
+					Point position = course[0];
+					Point destination = course[1];
+					
+					avoidance->reactToCollisionSpottedMessage(position, destination);
+				break;
+				case 53:
+					int number_of_steps = (int) (message / 100);
+					
+					avoidance->reactToProposal(number_of_steps);
+				break;
+				case 54:
+					
+				break;
+				case 55:
+					avoidance->reactToFreeWayAnnouncement();
+				break;
+			}
+			valueChanged = false;
+		}
+	}
 }
 
 /*********************************************************************
 All methods below are private.
 *********************************************************************/
 
+
+/**************************** BLUETOOTH CLIENT-SERVER METHODS ****************************/
+
+
 class MyServerCallbacks : public BLEServerCallbacks {
-  void onConnect(BLEServer* pServer) {
-    Serial.println("Device connected.");
-  };
-  void onDisconnect(BLEServer* pServer) {
-    Serial.println("Device disconnected.");
-  }
+	void onConnect(BLEServer* pServer) {
+		Serial.println("Device connected.");
+	};
+	void onDisconnect(BLEServer* pServer) {
+		Serial.println("Device disconnected.");
+	}
 };
 
 void BLE_communicator::createServer(){
-  //Create the BLE Device
-  BLEDevice::init("PaintersServer");
-
-  //Create the BLE Server
-  BLEServer *pServer = BLEDevice::createServer();
-  pServer->setCallbacks(new MyServerCallbacks());
-
-  //Create the BLE Service
-  BLEService *pService = pServer->createService(SERVICE_UUID);
-
-  //Create a BLE Characteristic
-  pCharacteristic = pService->createCharacteristic(
-                                         CHARACTERISTIC_UUID,
-                                         BLECharacteristic::PROPERTY_READ |
-                                         BLECharacteristic::PROPERTY_WRITE |
-                                         BLECharacteristic::PROPERTY_NOTIFY |
-                                         BLECharacteristic::PROPERTY_INDICATE
-                                       );
-
-  pCharacteristic->addDescriptor(new BLE2902());
-  pCharacteristic->setValue("Hello World says Neil");
-  pService->start();
-  
-  // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
-  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
-  pAdvertising->addServiceUUID(SERVICE_UUID);
-  pAdvertising->setScanResponse(true);
-  pAdvertising->setMinPreferred(0x06);  // functions that help with iPhone connections issue
-  pAdvertising->setMinPreferred(0x12);
-  BLEDevice::startAdvertising();
-  Serial.println("PaintersServer created");
+	//Create the BLE Device
+	BLEDevice::init("PaintersServer");
+	
+	//Create the BLE Server
+	BLEServer *pServer = BLEDevice::createServer();
+	pServer->setCallbacks(new MyServerCallbacks());
+	
+	//Create the BLE Service
+	BLEService *pService = pServer->createService(SERVICE_UUID);
+	
+	//Create a BLE Characteristic
+	pCharacteristic = pService->createCharacteristic(
+										CHARACTERISTIC_UUID,
+										BLECharacteristic::PROPERTY_READ |
+										BLECharacteristic::PROPERTY_WRITE |
+										BLECharacteristic::PROPERTY_NOTIFY |
+										BLECharacteristic::PROPERTY_INDICATE
+										);
+	
+	pCharacteristic->addDescriptor(new BLE2902());
+	pCharacteristic->setValue("Hello World says Neil");
+	pService->start();
+	
+	// BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
+	BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+	pAdvertising->addServiceUUID(SERVICE_UUID);
+	pAdvertising->setScanResponse(true);
+	pAdvertising->setMinPreferred(0x06);  // functions that help with iPhone connections issue
+	pAdvertising->setMinPreferred(0x12);
+	BLEDevice::startAdvertising();
+	Serial.println("PaintersServer created");
 }
 
 class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
@@ -149,13 +225,17 @@ void BLE_communicator::scan()
 
 void BLE_communicator::connect()
 {
-  Serial.println("Connecting1...");
+  Serial.println("Connecting...");
   //BLEAddress pAddress = device.getAddress();
   BLEClient*  pClient  = BLEDevice::createClient();
   pClient->connect(myServerDevice);
   Serial.println("Connected to the server ");
   registerCallback(pClient);
 }
+
+
+/**************************** BLUETOOTH EVENT-HANDLING METHODS ****************************/
+
 
 void BLE_communicator::registerCallback(BLEClient* pClient) {
   BLERemoteService* pRemoteService = pClient->getService(SERVICE_UUID);
@@ -173,4 +253,43 @@ void BLE_communicator::registerCallback(BLEClient* pClient) {
 
 void BLE_communicator::notifyCallback(BLERemoteCharacteristic* characteristic, uint8_t* pData, size_t length, bool isNotify) {
   valueChanged = true;
+}
+
+
+/**************************** METHODS TO CODE AND ENCODE BLUETOOTH MESSAGE ****************************/
+
+
+double BLE_communicator::hashTwoPoints(Point source, Point dest) {
+	std::vector<int> coords;
+	coords.push_back( (int) std::floor(a * 10 + 0.5) );
+	coords.push_back( (int) std::floor(a * 10 + 0.5) );
+	coords.push_back( (int) std::floor(a * 10 + 0.5) );
+	coords.push_back( (int) std::floor(a * 10 + 0.5) );
+	
+	long long factor = 100;
+	long long message = 0;
+	for (int i = 0; i < coords.size(); ++i)
+	{
+		message += factor * coords[i];
+		factor *= 1000;
+	}
+
+	return (double) message;
+}
+
+std::vector<Point> BLE_communicator::makeTwoPoints(long long value)
+{
+	long long message = (value / 100);
+	double srcX = (message % 1000) / 10; message /= 1000;
+	double srcY = (message % 1000) / 10; message /= 1000;
+	Point source(srcX, srcY);
+
+	double dstX = (message % 1000) / 10; message /= 1000;
+	double dstY = (message % 1000) / 10; message /= 1000;
+	Point dest(dstX, dstY);
+
+	std::vector<Point> pointsVector;
+	pointsVector.push_back(source);
+	pointsVector.push_back(dest);
+	return pointsVector;
 }

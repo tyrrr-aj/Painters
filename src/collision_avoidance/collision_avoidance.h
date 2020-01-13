@@ -34,6 +34,7 @@ class Collision_avoidance {
 
 		void reactToPartnersCourseChange(Point partners_position, Point partners_destination);
 		void reactToCollisionSpottedMessage(Point partners_position, Point partners_destination);
+		void reactToProposal(int partners_number_of_steps_to_free_way);
 		void reactToProposalResponse(ResponseToProposal response);
 		void reactToFreeWayAnnouncement();
 

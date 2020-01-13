@@ -35,31 +35,35 @@ void Collision_avoidance::destinationReached() {
 	}
 }
 
+
 /*********************** CALLBACKS ****************************/
+
 
 void Collision_avoidance::reactToPartnersCourseChange(Point partners_position, Point partners_destination) {
 	if (checkIfPathsAreCrossing(Point(localization->getCurrentXY()), **current_destination, partners_position, partners_destination)) {
 		signalCollision();
-		int partners_number_of_steps_to_free_way = communicator->waitForProposal();
-		switch (checkWhoShouldWait(partners_number_of_steps_to_free_way)) {
-			case ME:
-				communicator->respondToProposal(AGREE);
-				stopToGiveWay();
-				break;
-			case PARTNER:
-				communicator->respondToProposal(REJECT);
-				state = DRIVING_WHILE_PARTNER_WAITS;
-				break;
-			case NEITHER:
-				communicator->respondToProposal(REJECT);
-				moveToGiveWay(partners_position, partners_destination);
-				communicator->announceFreeWay();
-		}
 	}
 }
 
 void Collision_avoidance::reactToCollisionSpottedMessage(Point partners_position, Point partners_destination) {
 	communicator->propose(calculateNumberOfStepsToFreeWay(partners_position, partners_destination));
+}
+
+void Collision_avoidance::reactToProposal(int partners_number_of_steps_to_free_way) {
+	switch (checkWhoShouldWait(partners_number_of_steps_to_free_way)) {
+		case ME:
+			communicator->respondToProposal(AGREE);
+			stopToGiveWay();
+			break;
+		case PARTNER:
+			communicator->respondToProposal(REJECT);
+			state = DRIVING_WHILE_PARTNER_WAITS;
+			break;
+		case NEITHER:
+			communicator->respondToProposal(REJECT);
+			moveToGiveWay(partners_position, partners_destination);
+			communicator->announceFreeWay();
+	}
 }
 
 void Collision_avoidance::reactToProposalResponse(ResponseToProposal response) {
@@ -78,7 +82,9 @@ void Collision_avoidance::reactToFreeWayAnnouncement() {
 	steering->resume();
 }
 
+
 /******************** PRIVATE METHODS *************************/
+
 
 bool Collision_avoidance::checkIfPathsAreCrossing(Point first_robot_position, Point first_robot_destination, Point second_robot_position, Point second_robot_destination) {
 	return lines::getDistanceBetweenLines(first_robot_position, first_robot_destination, second_robot_position, partners_destination) < PRIVATE_RADIUS;

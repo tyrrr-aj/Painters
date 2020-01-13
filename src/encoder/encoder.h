@@ -28,7 +28,7 @@ Code developed in Arduino 1.8.9, on ESP32 DevkitC v4
 
 #include "../../pins.h"
 
-#define ENCODER_MIN_DELAY 40
+#define ENCODER_MIN_DELAY 50
 
 enum WHEEL {LEFT, RIGHT};
 

@@ -108,6 +108,12 @@ void Steering::rotateChassis()
 		Serial.print(currentRotation.X);
 		Serial.print(", ");
 		Serial.println(currentRotation.Y);
+
+		Serial.print("(desiredRotation: ");
+		Serial.print(desiredRotation.X);
+		Serial.print(", ");
+		Serial.print(desiredRotation.Y);
+		Serial.println(")");
 	}
 
 	Serial.println("");

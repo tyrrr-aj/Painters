@@ -14,9 +14,9 @@ void Collision_avoidance::addCommunicator(BLE_communicator* communicator) {
 }
 
 void Collision_avoidance::init(std::vector<Point*> path) {
-	using namespace std::placeholders;
 	communicator->setUpCommunication();
 	this->path = path;
+    this->current_destination = path.begin();
 }
 
 void Collision_avoidance::newDestination(std::vector<Point*>::iterator new_destination) {
@@ -67,12 +67,12 @@ void Collision_avoidance::reactToProposal(int partners_number_of_steps_to_free_w
 	}
 }
 
-void Collision_avoidance::reactToProposalResponse(ResponseToProposal response) {
+void Collision_avoidance::reactToProposalResponse(ble_communicator::ResponseToProposal response) {
 	switch (response) {
-		case AGREE:
+		case ble_communicator::AGREE:
 			state = DRIVING_WHILE_PARTNER_WAITS;
 			break;
-		case REJECT:
+		case ble_communicator::REJECT:
 			stopToGiveWay();
 			break;
 	}
@@ -115,9 +115,9 @@ Robot Collision_avoidance::checkWhoShouldWait(int partners_number_of_steps_to_fr
 }
 
 int Collision_avoidance::calculateNumberOfStepsToFreeWay(Point partners_position, Point partners_destination) {
-	for (int number_of_steps = 1,
-			std::vector<Point*>::iterator pos = current_destination;
-			std::vector<Point*>::iterator des = std::next(current_destination, 1);
+	/*for (int number_of_steps = 1,
+			std::vector<Point*>::iterator pos = this->current_destination,
+			std::vector<Point*>::iterator des = std::next(this->current_destination, 1);
 			des != path.end();
 			pos++, des++, number_of_steps++) {
 		if (checkForDirectCollision(**pos, **des, partners_position)) {
@@ -126,7 +126,7 @@ int Collision_avoidance::calculateNumberOfStepsToFreeWay(Point partners_position
 		if (!checkIfPathsAreCrossing(**pos, **des, partners_position, partners_destination)) {
 			return number_of_steps;
 		}
-	}
+	}*/
 	return -1;
 }
 
@@ -136,8 +136,9 @@ void Collision_avoidance::stopToGiveWay() {
 }
 
 void Collision_avoidance::moveToGiveWay(Point partners_position, Point partners_destination) {
-	Point bypass_point = lines.findOptimalBypassPoint(Point(localization->getCurrentXY), **current_destination, partners_position, partners_destination)
+	/*Point bypass_point = lines.findOptimalBypassPoint(Point(localization->getCurrentXY), **current_destination, partners_position, partners_destination)
 	steering->driveTo(bypass_point);
 	communicator->announceFreeWay();
-	steering->finishInterruptedTask(**current_destination);
+	steering->finishInterruptedTask(**current_destination);*/
+    steering->pause();
 }

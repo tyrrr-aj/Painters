@@ -1,6 +1,9 @@
 #ifndef BLE_COMMUNICATOR_H
 #define BLE_COMMUNICATOR_H
 
+#include <arduino.h>
+#include <string>
+
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEScan.h>
@@ -9,19 +12,13 @@
 #include <BLE2902.h>
 
 #include "../geometry/Point.h"
-#include "../collision_avoidance/collision_avoidance.h"
+//#include "../collision_avoidance/collision_avoidance.h"
+#include "protocol.h"
 
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
 class Collision_avoidance;
-
-namespace ble_communicator {
-	enum ResponseToProposal {AGREE, REJECT};
-}
-
-BLEAdvertisedDevice* myServerDevice;
-bool doConnect = false;
 
 class BLE_communicator
 {
@@ -38,7 +35,7 @@ class BLE_communicator
         void announceNewCourse(Point position, Point destination);
         void signalCollision(Point ownPosition, Point ownDestination);
         void propose(int number_of_steps);
-        void respondToProposal(ResponseToProposal response);
+        void respondToProposal(protocol::ResponseToProposal response);
 		void announceFreeWay();
 		
 		void listen();
@@ -48,8 +45,6 @@ class BLE_communicator
 	
 		BLECharacteristic* pCharacteristic;
 		BLERemoteCharacteristic* global_characteristic;
-		
-		static bool valueChanged;
 		
 		/*BLUETOOTH CLIENT-SERVER METHODS*/
 		

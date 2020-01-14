@@ -3,14 +3,12 @@
 
 #include <vector>
 
-#include "../communication/ble_communicator.h"
 #include "../steering/steering.h"
 #include "../geometry/Point.h"
 #include "../geometry/lines.h"
+#include "../communication/protocol.h"
 
 #define PRIVATE_RADIUS 10.0 // maximum distance between robots which causes collision, unit must be the same as in path file
-
-using namespace ble_communicator;
 
 class BLE_communicator;
 
@@ -32,7 +30,7 @@ namespace collision_avoidance {
 		void reactToPartnersCourseChange(Point partners_position, Point partners_destination);
 		void reactToCollisionSpottedMessage(Point partners_position, Point partners_destination);
 		void reactToProposal(int partners_number_of_steps_to_free_way);
-		void reactToProposalResponse(ble_communicator::ResponseToProposal response);
+		void reactToProposalResponse(protocol::ResponseToProposal response);
 		void reactToFreeWayAnnouncement();
 	
 	private:

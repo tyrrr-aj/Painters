@@ -1,4 +1,5 @@
 #include "collision_avoidance.h"
+#include "../communication/ble_communicator.h"
 
 using namespace collision_avoidance;
 
@@ -53,26 +54,26 @@ void Collision_avoidance::reactToCollisionSpottedMessage(Point partners_position
 void Collision_avoidance::reactToProposal(int partners_number_of_steps_to_free_way) {
 	switch (checkWhoShouldWait(partners_number_of_steps_to_free_way)) {
 		case ME:
-			communicator->respondToProposal(AGREE);
+			communicator->respondToProposal(protocol::ResponseToProposal::AGREE);
 			stopToGiveWay();
 			break;
 		case PARTNER:
-			communicator->respondToProposal(REJECT);
+			communicator->respondToProposal(protocol::ResponseToProposal::REJECT);
 			state = DRIVING_WHILE_PARTNER_WAITS;
 			break;
 		case NEITHER:
-			communicator->respondToProposal(REJECT);
+			communicator->respondToProposal(protocol::ResponseToProposal::REJECT);
 			moveToGiveWay(partners_position, partners_destination);
 			communicator->announceFreeWay();
 	}
 }
 
-void Collision_avoidance::reactToProposalResponse(ble_communicator::ResponseToProposal response) {
+void Collision_avoidance::reactToProposalResponse(protocol::ResponseToProposal response) {
 	switch (response) {
-		case ble_communicator::AGREE:
+		case protocol::ResponseToProposal::AGREE:
 			state = DRIVING_WHILE_PARTNER_WAITS;
 			break;
-		case ble_communicator::REJECT:
+		case protocol::ResponseToProposal::REJECT:
 			stopToGiveWay();
 			break;
 	}

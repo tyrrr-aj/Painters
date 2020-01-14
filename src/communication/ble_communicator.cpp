@@ -1,4 +1,10 @@
 #include "ble_communicator.h"
+#include "../collision_avoidance/collision_avoidance.h"
+
+bool valueChanged = false;
+
+BLEAdvertisedDevice* myServerDevice;
+bool doConnect = false;
 
 /*********************** INITIALIZING METHODS ****************************/
 
@@ -65,7 +71,7 @@ void BLE_communicator::propose(int number_of_steps) {
 	pCharacteristic->notify();
 }
 
-void BLE_communicator::respondToProposal(ResponseToProposal response) {
+void BLE_communicator::respondToProposal(protocol::ResponseToProposal response) {
     // make sure partner will call his proposalResponseCallback()
 	
 	//TODO
@@ -85,7 +91,7 @@ void BLE_communicator::listen() {
 	while(true){
 		if(valueChanged){
 			std::string receivedData1 = global_characteristic->readValue();
-			double receivedData = stod(receivedData1);
+			double receivedData = 100.0;//stod(receivedData1);
 			long long message = (long long) receivedData;
 			
 			int notifyType = message % 100;

@@ -3,6 +3,8 @@
 
 #include "Vector.h"
 
+class Vector;
+
 class Point {
     public:
         Point() {}
@@ -10,9 +12,12 @@ class Point {
         Point(Vector v);
         double X;
         double Y;
+        
+        static double distance(Point a, Point b);
+        static double distance_squared(Point a, Point b);
 
         void operator=(Point other);
-        
+        Point operator-(Point other);
 };
 
 #endif

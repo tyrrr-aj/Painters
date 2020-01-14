@@ -44,3 +44,7 @@ Vector Vector::operator-(Vector other) const {
 	Vector subtract(other.X - this->X, other.Y - this->Y);
 	return subtract;
 }
+
+Vector Vector::operator*(double scalar) const {
+	return Vector(this->X * scalar, this->Y * scalar);
+}

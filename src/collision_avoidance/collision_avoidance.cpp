@@ -14,7 +14,6 @@ void Collision_avoidance::addCommunicator(BLE_communicator* communicator) {
 }
 
 void Collision_avoidance::init(std::vector<Point*> path) {
-	using namespace std::placeholders;
 	communicator->setUpCommunication();
 	this->path = path;
 }
@@ -136,8 +135,9 @@ void Collision_avoidance::stopToGiveWay() {
 }
 
 void Collision_avoidance::moveToGiveWay(Point partners_position, Point partners_destination) {
-	Point bypass_point = lines.findOptimalBypassPoint(Point(localization->getCurrentXY), **current_destination, partners_position, partners_destination)
+	/*Point bypass_point = lines.findOptimalBypassPoint(Point(localization->getCurrentXY), **current_destination, partners_position, partners_destination)
 	steering->driveTo(bypass_point);
 	communicator->announceFreeWay();
-	steering->finishInterruptedTask(**current_destination);
+	steering->finishInterruptedTask(**current_destination);*/
+    steering->pause();
 }

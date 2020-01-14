@@ -84,49 +84,55 @@ void BLE_communicator::announceFreeWay() {
 void BLE_communicator::listen() {
 	while(true){
 		if(valueChanged){
-			double receivedData = global_characteristic->readValue();
+			std::string receivedData1 = global_characteristic->readValue();
+			double receivedData = stod(receivedData1);
 			long long message = (long long) receivedData;
 			
 			int notifyType = message % 100;
 			
 			switch(notifyType){
-				case 51:
+				case 51: {
 					std::vector<Point> course = makeTwoPoints(message);
 					Point position = course[0];
 					Point destination = course[1];
 					
 					Serial.println("Received new partner's course:");
 					Serial.print("(X,Y) = (");
-					Serial.print(position.X.c_str());
+					Serial.print(position.X);
 					Serial.print(", ");
-					Serial.print(position.Y.c_str());
+					Serial.print(position.Y);
 					Serial.println(")");
 					
 					Serial.print("(X,Y) = (");
-					Serial.print(destination.X.c_str());
+					Serial.print(destination.X);
 					Serial.print(", ");
-					Serial.print(destination.Y.c_str());
+					Serial.print(destination.Y);
 					Serial.println(")");
 					
 					//avoidance->reactToPartnersCourseChange(position, destination);
+				}
 				break;
-				case 52:
+				case 52: {
 					std::vector<Point> course = makeTwoPoints(message);
 					Point position = course[0];
 					Point destination = course[1];
 					
 					avoidance->reactToCollisionSpottedMessage(position, destination);
+				}	
 				break;
-				case 53:
+				case 53: {
 					int number_of_steps = (int) (message / 100);
 					
 					avoidance->reactToProposal(number_of_steps);
+				}	
 				break;
-				case 54:
-					
+				case 54: {
+				
+				}	
 				break;
-				case 55:
+				case 55: {
 					avoidance->reactToFreeWayAnnouncement();
+				}	
 				break;
 			}
 			valueChanged = false;

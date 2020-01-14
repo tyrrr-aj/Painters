@@ -16,13 +16,17 @@
 
 class Collision_avoidance;
 
-enum ResponseToProposal {AGREE, REJECT};
+namespace ble_communicator {
+	enum ResponseToProposal {AGREE, REJECT};
+}
+
+BLEAdvertisedDevice* myServerDevice;
+bool doConnect = false;
 
 class BLE_communicator
 {
     public:
-		static BLEAdvertisedDevice* mySeverDevice;
-	
+		
 		/*INITIALIZING METHODS*/
 	
         BLE_communicator();
@@ -45,7 +49,6 @@ class BLE_communicator
 		BLECharacteristic* pCharacteristic;
 		BLERemoteCharacteristic* global_characteristic;
 		
-		bool doConnect = false;
 		static bool valueChanged;
 		
 		/*BLUETOOTH CLIENT-SERVER METHODS*/
@@ -62,7 +65,7 @@ class BLE_communicator
 		/*METHODS TO CODE AND ENCODE BLUETOOTH MESSAGES*/
 		
 		double hashTwoPoints(Point, Point);
-		std::vector<Point> makeTwoPoints(double);
+		std::vector<Point> makeTwoPoints(long long);
 };
 
 #endif

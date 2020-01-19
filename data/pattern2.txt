@@ -1,0 +1,23 @@
+\documentclass[10pt]{article}
+\usepackage{pstricks-add}
+\pagestyle{empty}
+\begin{document}
+\newrgbcolor{rvwvcq}{0.08235294117647059 0.396078431372549 0.7529411764705882}
+\newrgbcolor{wrwrwr}{0.3803921568627451 0.3803921568627451 0.3803921568627451}
+\psset{xunit=1cm,yunit=1cm,algebraic=true,dimen=middle,dotstyle=o,dotsize=5pt 0,linewidth=1.6pt,arrowsize=3pt 2,arrowinset=0.25}
+\begin{pspicture*}(-68.21184510578641,-8.076747930320105)(13.616023717033464,86.89041302462243)
+\multips(0,-8)(0,10){10}{\psline[linestyle=dashed,linecap=1,dash=1.5pt 1.5pt,linewidth=0.4pt,linecolor=lightgray]{c-c}(-68.21184510578641,0)(13.616023717033464,0)}
+\multips(-68,0)(10,0){9}{\psline[linestyle=dashed,linecap=1,dash=1.5pt 1.5pt,linewidth=0.4pt,linecolor=lightgray]{c-c}(0,-8.076747930320105)(0,86.89041302462243)}
+\psaxes[labelFontSize=\scriptstyle,xAxis=true,yAxis=true,Dx=10,Dy=10,ticksize=-2pt 0,subticks=2]{->}(0,0)(-68.21184510578641,-8.076747930320105)(13.616023717033464,86.89041302462243)
+\begin{scriptsize}
+\psdots[dotstyle=*,linecolor=rvwvcq](0,60)
+\rput[bl](0.47673158491137024,61.26228876691875){\rvwvcq{$A$}}
+\psdots[dotstyle=*,linecolor=wrwrwr](0,0)
+\rput[bl](0.47673158491137024,1.2898761638659948){\wrwrwr{$B$}}
+\psdots[dotstyle=*,linecolor=rvwvcq](-40,0)
+\rput[bl](-39.461512816687524,1.2898761638659948){\rvwvcq{$C$}}
+\psdots[dotstyle=*,linecolor=rvwvcq](2,0)
+\rput[bl](2.5582036058416056,1.2898761638659948){\rvwvcq{$D$}}
+\end{scriptsize}
+\end{pspicture*}
+\end{document}

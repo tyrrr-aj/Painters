@@ -3,6 +3,8 @@
 
 #include <arduino.h>
 #include <string>
+#include <iostream>
+#include <cstdlib>
 
 #include <BLEDevice.h>
 #include <BLEUtils.h>

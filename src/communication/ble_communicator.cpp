@@ -38,25 +38,33 @@ void BLE_communicator::setUpCommunication() {
 /*********************** BLUETOOTH NOTIFYING METHODS ****************************/
 
 
+
+
+
 void BLE_communicator::announceNewCourse(Point position, Point destination) {
     // pass provided coordinates to partner, partner should invoke it's newCourseCalback()
 	
-    Serial.println("*********NEW COURSE SENDING********");
-	Serial.println("");
-	int notifyType = 51;
-	double value = hashTwoPoints(position, destination);
-	value += (double) notifyType;
+    Serial.println("****************************NEW COURSE SENDING****************************");
+	// int notifyType = 51;
+	// double value = hashTwoPoints(position, destination);
+	// value += (double) notifyType
 
-	Serial.print("Sending value to client10:  ");
-    Serial.println(value);
+	Serial.print("Sending value to client:  ");
+    // Serial.println(value);
+	// Serial.print(message.curr_loc.X);
+	// Serial.print(" ");
+	// Serial.print(message.curr_loc.Y);
+	// Serial.print(", ");
+	Serial.print(position.X);
+	Serial.print(" ");
+	Serial.println(position.Y);
 
-	value = 1539.0;
-	int val = 10;
-	pCharacteristic->setValue(val);
+	pCharacteristic->setPoint(position);
 	pCharacteristic->notify();
-	Serial.println("");
-    Serial.println("*****************************");
+    Serial.println("************************************************************************");
 }                                                    
+
+
 
 void BLE_communicator::signalCollision(Point ownPosition, Point ownDestination) {
     // pass provided coordinates to partner, partner should invoke it's collisionSpottedCallback()
@@ -99,20 +107,40 @@ void BLE_communicator::announceFreeWay() {
 void BLE_communicator::listen() {
 	while(true){
 		if(valueChanged){
-			const char* receivedString = global_characteristic->readValue().c_str();
+			Serial.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+			//Point point = global_characteristic->getPoint();
+			Serial.println(global_characteristic->readValue().c_str());
+			//Serial.print(point.X);
+			Serial.print(" ");
+			// Serial.print(message->curr_loc.Y);
+			// Serial.print(", ");
+			// Serial.print(message->dest.X);
+			// Serial.print(" ");
+			//Serial.println(point.Y);
+			Serial.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+			//const std::string s = global_characteristic->readValue();
+			const char* receivedString = "123";// = s.c_str();
             char* p;
 			double receivedData = std::strtod(receivedString, &p);
 			long long message = (long long) receivedData;
 			
-			int notifyType = message % 100;
+			int notifyType = 50;//message % 100;
+			
+			Serial.println("RECEIVEDFGHJ");
+			Serial.print("Value: ");
+			Serial.print(receivedData);
+			Serial.print(",		");
+			Serial.print(receivedString);
+			//Serial.println(notifyType);
+			
 			
 			switch(notifyType){
 				case 51: {
-					std::vector<Point> course = makeTwoPoints(message);
+					/*std::vector<Point> course = makeTwoPoints(message);
 					Point position = course[0];
 					Point destination = course[1];
 					
-                    Serial.println("*********NEW COURSE received***********");
+                    Serial.println("****************************NEW COURSE received****************************");
 					Serial.println("Received new partner's course:");
 					Serial.print("(X,Y) = (");
 					Serial.print(position.X);
@@ -124,8 +152,8 @@ void BLE_communicator::listen() {
 					Serial.print(destination.X);
 					Serial.print(", ");
 					Serial.print(destination.Y);
-					Serial.println(")");
-					Serial.println("****************");
+					Serial.println(")");*/
+					Serial.println("*********************************************************************");
 
 					//avoidance->reactToPartnersCourseChange(position, destination);
 				}
@@ -155,6 +183,7 @@ void BLE_communicator::listen() {
 			}
 			valueChanged = false;
 		}
+		delay(100);
 	}
 }
 
@@ -186,17 +215,22 @@ void BLE_communicator::createServer(){
 	//Create the BLE Service
 	BLEService *pService = pServer->createService(SERVICE_UUID);
 	
-	//Create a BLE Characteristic
-	pCharacteristic = pService->createCharacteristic(
-										CHARACTERISTIC_UUID,
-										BLECharacteristic::PROPERTY_READ |
-										BLECharacteristic::PROPERTY_WRITE |
-										BLECharacteristic::PROPERTY_NOTIFY |
-										BLECharacteristic::PROPERTY_INDICATE
-										);
+	p1Characteristic = new MyPointCharacteristic();
+	p1Characteristic->setReadProperty(true);
+	p1Characteristic->setWriteProperty(true);
+	p1Characteristic->setNotifyProperty(true);
+
+	pService->addCharacteristic(p1Characteristic);
+	p1Characteristic->addDescriptor(new BLE2902());
+
+	p2Characteristic = new MyPointCharacteristic();
+	p2Characteristic->setReadProperty(true);
+	p2Characteristic->setWriteProperty(true);
+	p2Characteristic->setNotifyProperty(true);
 	
-	pCharacteristic->addDescriptor(new BLE2902());
-	pCharacteristic->setValue("Hello World says Neil");
+	pService->addCharacteristic(p2Characteristic);
+	p2Characteristic->addDescriptor(new BLE2902());
+	
 	pService->start();
 	
 	// BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
@@ -278,6 +312,7 @@ void BLE_communicator::registerCallback(BLEClient* pClient) {
 
 void BLE_communicator::notifyCallback(BLERemoteCharacteristic* characteristic, uint8_t* pData, size_t length, bool isNotify) {
   valueChanged = true;
+
 }
 
 
@@ -289,11 +324,11 @@ double BLE_communicator::hashTwoPoints(Point source, Point dest) {
 	coords.push_back( (int) std::floor(source.X * 10 + 0.5) );
 	coords.push_back( (int) std::floor(source.Y * 10 + 0.5) );
 	coords.push_back( (int) std::floor(dest.X * 10 + 0.5) );
-	coords.push_back( 0/*(int) std::floor(dest.Y * 10 + 0.5) */);
+	coords.push_back( (int) std::floor(dest.Y * 10 + 0.5) );
 	
-	long factor = 100;
+	long long factor = 100;
 	long message = 0;
-	for (int i = 0; i < coords.size() - 1; ++i)
+	for (int i = 0; i < coords.size(); ++i)
 	{
 		message += factor * coords[i];
 		factor *= 1000;

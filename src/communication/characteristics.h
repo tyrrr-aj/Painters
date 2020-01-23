@@ -24,7 +24,7 @@ class NotificationCharacteristic : public BLECharacteristic {
     }
 
     void setNotificationCode(int code) {
-      setValue(code);
+      setValue(&code);
     }
 };
 
@@ -51,7 +51,7 @@ class ProposalCharacteristic : public BLECharacteristic {
     }
 
     void setProposal(int numberOfSteps) {
-      setValue(numberOfSteps);
+      setValue(&numberOfSteps);
     }
 };
 
@@ -63,7 +63,7 @@ class ResponseToProposalCharacteristic : public BLECharacteristic {
     }
 
     void setResponse(protocol::ResponseToProposal response) {
-      setValue(response);
+      setValue(&response);
     }
 };
 

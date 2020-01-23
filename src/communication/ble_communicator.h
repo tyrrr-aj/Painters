@@ -51,10 +51,20 @@ class BLE_communicator
 		BLERemoteCharacteristic* REMOTE_courseCharacteristic;
 
 		ProposalCharacteristic* LOCAL_proposalCharacteristic;
-		BLERemoteCharacteristic* REMOTE_notificationCharacteristic;
+		BLERemoteCharacteristic* REMOTE_proposalCharacteristic;
 
 		ResponseToProposalCharacteristic* LOCAL_responseCharacteristic;
 		BLERemoteCharacteristic* REMOTE_responseCharacteristic;
+
+		void notifyPartner(NotificationCode notificationCode);
+
+		/*MESSAGES CALLBACK METHODS*/
+
+		void newCourseCallback();
+		void collisionSpottedCallback();
+		void proposalCallback();
+		void responseToProposalCallback();
+		void freeWayCallback();
 
 		/*BLUETOOTH CLIENT-SERVER METHODS*/
 		

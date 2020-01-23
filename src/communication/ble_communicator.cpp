@@ -1,7 +1,7 @@
 #include "ble_communicator.h"
 #include "../collision_avoidance/collision_avoidance.h"
 
-NotificationCode NotificationCode = NONE;
+NotificationCode notificationCode;
 
 BLEAdvertisedDevice* myServerDevice;
 bool partnerFound = false;
@@ -14,7 +14,7 @@ BLE_communicator::BLE_communicator() {
 
 BLE_communicator::BLE_communicator(Collision_avoidance* avoidance) {
 	this->avoidance = avoidance;
-	valueChanged = false;
+	notificationCode = NONE;
 }
 
 void BLE_communicator::setUpCommunication() {
@@ -39,37 +39,59 @@ void BLE_communicator::setUpCommunication() {
 
 
 void BLE_communicator::announceNewCourse(Point position, Point destination) {
-    // pass provided coordinates to partner, partner should invoke it's newCourseCalback()
-	
-	
+	LOCAL_courseCharacteristic->setCourse(position, destination);
+	notifyPartner(NEW_COURSE);
 }                                                 
 
 void BLE_communicator::signalCollision(Point ownPosition, Point ownDestination) {
-    // pass provided coordinates to partner, partner should invoke it's collisionSpottedCallback()
-	
+	LOCAL_courseCharacteristic->setCourse(position, destination);
+	notifyPartner(COLLISION_SPOTTED);
 }
 
 void BLE_communicator::propose(int number_of_steps) {
-    // pass given number to awaiting partner
-	
+	LOCAL_proposalCharacteristic->setProposal(number_of_steps);
+	notifyPartner(PROPOSAL);
 }
 
 void BLE_communicator::respondToProposal(protocol::ResponseToProposal response) {
-    // make sure partner will call his proposalResponseCallback()
-	
+	LOCAL_responseCharacteristic->setResponse(response);
+	notifyPartner(RESPONSE_TO_PROPOSAL);
 }
 
 void BLE_communicator::announceFreeWay() {
-    // make sure partner invokes his freeWayAnnouncementCallback()
-	
+    notifyPartner(FREE_WAY);
+}
+
+void BLE_communicator::notifyPartner(NotificationCode notificationCode) {
+	LOCAL_notificationCharacteristic->setNotificationCode(notificationCode);
+	LOCAL_notificationCharacteristic->notify();
 }
 
 void BLE_communicator::listen() {
 	while(true){
-		if(valueChanged){
-			
-			valueChanged = false;
+		switch (notificationCode) {
+			case NEW_COURSE:
+				newCourseCallback();
+				break;
+
+			case COLLISION_SPOTTED:
+				collisionSpottedCallback();
+				break;
+
+			case PROPOSAL:
+				proposalCallback();
+				break;
+
+			case RESPONSE_TO_PROPOSAL:
+				responseToProposalCallback();
+				break;
+
+			case FREE_WAY:
+				freeWayCallback();
+				break;
 		}
+		notificationCode = NONE;
+		delay(10);
 	}
 }
 
@@ -77,6 +99,31 @@ void BLE_communicator::listen() {
 All methods below are private.
 *********************************************************************/
 
+/***************************** BLUETOOTH MESSAGES CALLBACKS ******************************/
+
+void BLE_communicator::newCourseCallback() {
+	Course* newCourse = reinterpret_cast<Course*>(REMOTE_courseCharacteristic->readValue());
+	avoidance->reactToPartnersCourseChange(newCourse->position, newCourse->destination);
+}
+
+void BLE_communicator::collisionSpottedCallback() {
+	Course* newCourse = reinterpret_cast<Course*>(REMOTE_courseCharacteristic->readValue());
+	avoidance->reactToCollisionSpottedMessage(newCourse->position, newCourse->destination)
+}
+
+void BLE_communicator::proposalCallback() {
+	int* proposal = reinterpret_cast<int*>(REMOTE_proposalCharacteristic->readValue());
+	avoidance->reactToProposal(*proposal);
+}
+
+void BLE_communicator::responseToProposalCallback() {
+	protocol::ResponseToProposal* response = reinterpret_cast<int*>(REMOTE_responseCharacteristic->readValue());
+	avoidance->reactToProposalResponse(*response);
+}
+
+void BLE_communicator::freeWayCallback() {
+	avoidance->reactToFreeWayAnnouncement();
+}
 
 /**************************** BLUETOOTH CLIENT-SERVER METHODS ****************************/
 

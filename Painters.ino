@@ -1,12 +1,9 @@
 #include "src/collision_avoidance/collision_avoidance.h"
 #include "src/communication/ble_communicator.h"
 
-//COM6
-
 Collision_avoidance* avoidance = new Collision_avoidance();
 BLE_communicator* communicator = new BLE_communicator(avoidance);
 
-<<<<<<< HEAD
   Serial.println("RoutePlanner created successfully");
   std::vector<Point*> path = routePlanner.getPath("/pattern3.txt");
   //path.push_back(new Point(20.0, 0.0));
@@ -23,10 +20,6 @@ BLE_communicator* communicator = new BLE_communicator(avoidance);
   Encoder encoder;
   PausableMotors motors;
   motors.addEncoder(&encoder);
-=======
-void setup() {
-  Serial.begin(115200);
->>>>>>> 57eb843d57f509714cdc27afacbaee0de06dd324
   
   avoidance->addCommunicator(communicator);
 

@@ -38,10 +38,15 @@ void BLE_communicator::setUpCommunication() {
 /*********************** BLUETOOTH NOTIFYING METHODS ****************************/
 
 
+
+
+
 void BLE_communicator::announceNewCourse(Point position, Point destination) {
 	LOCAL_courseCharacteristic->setCourse(position, destination);
 	notifyPartner(NEW_COURSE);
 }                                                 
+
+
 
 void BLE_communicator::signalCollision(Point ownPosition, Point ownDestination) {
 	LOCAL_courseCharacteristic->setCourse(position, destination);

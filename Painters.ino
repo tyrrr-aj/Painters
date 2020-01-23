@@ -1,17 +1,12 @@
-#include "src/motors/motors.h"
-#include "src/encoder/encoder.h"
-#include "src/route_planning/RoutePlanner.h"
-#include "src/localization/localization.h"
-#include "src/control/Control.h"
-#include "src/file_loader/file_loader.h"
-#include "src/geometry/Point.h"
+#include "src/collision_avoidance/collision_avoidance.h"
+#include "src/communication/ble_communicator.h"
 
-void setup() {
-  Serial.begin(115200);
+//COM6
 
-  FileLoader fileLoader;
-  RoutePlanner routePlanner(&fileLoader);
+Collision_avoidance* avoidance = new Collision_avoidance();
+BLE_communicator* communicator = new BLE_communicator(avoidance);
 
+<<<<<<< HEAD
   Serial.println("RoutePlanner created successfully");
   std::vector<Point*> path = routePlanner.getPath("/pattern3.txt");
   //path.push_back(new Point(20.0, 0.0));
@@ -28,18 +23,22 @@ void setup() {
   Encoder encoder;
   PausableMotors motors;
   motors.addEncoder(&encoder);
+=======
+void setup() {
+  Serial.begin(115200);
+>>>>>>> 57eb843d57f509714cdc27afacbaee0de06dd324
   
-  Localization localization(&encoder);
-  Steering steering(&motors, &localization);
-  //BLE_communicator communicator;
-  //Collision_avoidance collision_avoidance(&communicator, &steering, &localization);
-  Control control(path, &steering, NULL);
+  avoidance->addCommunicator(communicator);
 
-  control.accomplishTrace();
-
+  communicator->setUpCommunication();
+  delay(5000);
 }
 
 void loop() {
-
+  Point source(47.4, 15.91);
+  Point dest(1.4313, 97.499);
+  
+  communicator->announceNewCourse(source, dest);
+  delay(5000);
 }
   

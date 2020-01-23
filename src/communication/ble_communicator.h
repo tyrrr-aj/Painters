@@ -3,6 +3,9 @@
 
 #include <arduino.h>
 #include <string>
+#include <iostream>
+#include <cstdlib>
+#include <sstream>
 
 #include <BLEDevice.h>
 #include <BLEUtils.h>
@@ -17,9 +20,58 @@
 #include "characteristics.h"
 
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
-#define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define POINT_1_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define POINT_2_CHARACTERISTIC_UUID "beb1234e-36e1-4688-b7f5-ea07361b26a8"
 
 class Collision_avoidance;
+
+class MyPointCharacteristic : public BLECharacteristic {
+	public:
+	MyPointCharacteristic(const char* uuid) : BLECharacteristic(BLEUUID(uuid)){
+		Point point(0,0);
+		setPoint(point);
+	}
+
+	Point getPoint()
+	{
+		std::string rawData = getValue();
+		std::stringstream s;
+		Point* point = new Point();
+		s.str(rawData);
+		s >> point->X >> point->Y;
+		return *point;
+	}
+
+	void setPoint(Point point){
+		std::string text;
+		std::stringstream s;
+		s.str(text);
+		s << point.X << " " << point.Y;
+		setValue(s.str());
+	}
+};
+
+class MyPointRemoteCharacteristic : public BLERemoteCharacteristic {	
+
+	Point getPoint()
+	{
+		std::string rawData = readValue();
+		std::stringstream s;
+		Point* point = new Point();
+		s.str(rawData);
+		s >> point->X >> point->Y;
+		return *point;
+	}
+
+	void setPoint(Point point)
+	{
+		std::string text;
+		std::stringstream s;
+		s.str(text);
+		s << point.X << " " << point.Y;
+		writeValue(s.str());
+	}
+};
 
 class BLE_communicator
 {

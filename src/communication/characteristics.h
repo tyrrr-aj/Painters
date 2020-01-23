@@ -20,11 +20,11 @@ class NotificationCharacteristic : public BLECharacteristic {
   public:
     NotificationCharacteristic() : BLECharacteristic(BLEUUID(CHARACTERISTIC_UUID_2)) {
       this->setNotifyProperty(true);
-      pCharacteristic->addDescriptor(new BLE2902());
+      this->addDescriptor(new BLE2902());
     }
 
     void setNotificationCode(int code) {
-      setValue(&code);
+      setValue((uint8_t*) &code, sizeof code);
     }
 };
 
@@ -32,7 +32,7 @@ class CourseCharacteristic : public BLECharacteristic {
   public:
     CourseCharacteristic() : BLECharacteristic {
       this->setReadProperty(true);
-      pCharacteristic->addDescriptor(new BLE2902());
+      this->addDescriptor(new BLE2902());
     }
 
     void setCourse(Point position, Point destination) {
@@ -47,11 +47,11 @@ class ProposalCharacteristic : public BLECharacteristic {
   public:
     ProposalCharacteristic : BLECharacteristic {
       this->setReadProperty(true);
-      pCharacteristic->addDescriptor(new BLE2902());
+      this->addDescriptor(new BLE2902());
     }
 
     void setProposal(int numberOfSteps) {
-      setValue(&numberOfSteps);
+      setValue((uint8_t*) &numberOfSteps, sizeof numberOfSteps);
     }
 };
 
@@ -59,11 +59,11 @@ class ResponseToProposalCharacteristic : public BLECharacteristic {
   public:
     ResponseToProposalCharacteristic : BLECharacteristic {
       this->setReadProperty(true);
-      pCharacteristic->addDescriptor(new BLE2902());
+      this->addDescriptor(new BLE2902());
     }
 
     void setResponse(protocol::ResponseToProposal response) {
-      setValue(&response);
+      setValue((uint8_t*) &response, sizeof response);
     }
 };
 

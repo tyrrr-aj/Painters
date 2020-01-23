@@ -15,7 +15,6 @@
 #include <BLE2902.h>
 
 #include "../geometry/Point.h"
-//#include "../collision_avoidance/collision_avoidance.h"
 #include "protocol.h"
 #include "characteristics.h"
 
@@ -24,54 +23,6 @@
 #define POINT_2_CHARACTERISTIC_UUID "beb1234e-36e1-4688-b7f5-ea07361b26a8"
 
 class Collision_avoidance;
-
-class MyPointCharacteristic : public BLECharacteristic {
-	public:
-	MyPointCharacteristic(const char* uuid) : BLECharacteristic(BLEUUID(uuid)){
-		Point point(0,0);
-		setPoint(point);
-	}
-
-	Point getPoint()
-	{
-		std::string rawData = getValue();
-		std::stringstream s;
-		Point* point = new Point();
-		s.str(rawData);
-		s >> point->X >> point->Y;
-		return *point;
-	}
-
-	void setPoint(Point point){
-		std::string text;
-		std::stringstream s;
-		s.str(text);
-		s << point.X << " " << point.Y;
-		setValue(s.str());
-	}
-};
-
-class MyPointRemoteCharacteristic : public BLERemoteCharacteristic {	
-
-	Point getPoint()
-	{
-		std::string rawData = readValue();
-		std::stringstream s;
-		Point* point = new Point();
-		s.str(rawData);
-		s >> point->X >> point->Y;
-		return *point;
-	}
-
-	void setPoint(Point point)
-	{
-		std::string text;
-		std::stringstream s;
-		s.str(text);
-		s << point.X << " " << point.Y;
-		writeValue(s.str());
-	}
-};
 
 class BLE_communicator
 {

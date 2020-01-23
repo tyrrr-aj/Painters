@@ -14,6 +14,7 @@
 #include "../geometry/Point.h"
 //#include "../collision_avoidance/collision_avoidance.h"
 #include "protocol.h"
+#include "characteristics.h"
 
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
@@ -43,9 +44,18 @@ class BLE_communicator
 	private:
 		Collision_avoidance* avoidance;
 	
-		BLECharacteristic* pCharacteristic;
-		BLERemoteCharacteristic* global_characteristic;
+		NotificationCharacteristic* LOCAL_notificationCharacteristic;
+		BLERemoteCharacteristic* REMOTE_notificationCharacteristic;
 		
+		CourseCharacteristic* LOCAL_courseCharacteristic;
+		BLERemoteCharacteristic* REMOTE_courseCharacteristic;
+
+		ProposalCharacteristic* LOCAL_proposalCharacteristic;
+		BLERemoteCharacteristic* REMOTE_notificationCharacteristic;
+
+		ResponseToProposalCharacteristic* LOCAL_responseCharacteristic;
+		BLERemoteCharacteristic* REMOTE_responseCharacteristic;
+
 		/*BLUETOOTH CLIENT-SERVER METHODS*/
 		
 		void createServer();

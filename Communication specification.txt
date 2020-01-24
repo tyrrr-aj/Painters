@@ -1,5 +1,0 @@
-Communication:
-- enum z rodzajami komunikatów
-
-Metody:
-- registerCallback(MessageType messageType, Function callback)

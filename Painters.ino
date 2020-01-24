@@ -1,5 +1,6 @@
 #include "src/collision_avoidance/collision_avoidance.h"
 #include "src/communication/ble_communicator.h"
+#include "src/steering/steering.h"
 
 Collision_avoidance* avoidance = new Collision_avoidance();
 BLE_communicator* communicator = new BLE_communicator(avoidance);

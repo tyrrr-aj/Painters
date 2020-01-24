@@ -1,62 +1,54 @@
 #include "pausable_motors.h"
 
 PausableMotors::PausableMotors() {
-    isPaused = false;
+    motorsControlSemaphore = xSemaphoreCreateBinary();
 }
 
 void PausableMotors::drive(int speed) {
+    xSemaphoreTake(motorsControlSemaphore, portMAX_DELAY);
 	currentLeftMotorSpeed = speed;
     currentRightMotorSpeed = speed;
-    if (!isPaused) {
-        Motors::drive(speed);
-    }
+    Motors::drive(speed);
+    xSemaphoreGive(motorsControlSemaphore);
 }
 
 void PausableMotors::coast() {
+    xSemaphoreTake(motorsControlSemaphore, portMAX_DELAY);
 	currentLeftMotorSpeed = 0;
     currentRightMotorSpeed = 0;
-    if (!isPaused) {
-        Motors::coast();
-    }
+    Motors::coast();
+    xSemaphoreGive(motorsControlSemaphore);
 }
 
 void PausableMotors::stop() {
+    xSemaphoreTake(motorsControlSemaphore, portMAX_DELAY);
 	currentLeftMotorSpeed = 0;
     currentRightMotorSpeed = 0;
-    if (!isPaused) {
-        Motors::stop();
-    }
+    Motors::stop();
+    xSemaphoreGive(motorsControlSemaphore);
 }
 
 void PausableMotors::rightMotor(int speed) {
+    xSemaphoreTake(motorsControlSemaphore, portMAX_DELAY);
 	currentRightMotorSpeed = speed;
-    if (!isPaused) {
-        Motors::rightMotor(speed);
-    }
+    Motors::rightMotor(speed);
+    xSemaphoreGive(motorsControlSemaphore);
 }
 
 void PausableMotors::leftMotor(int speed) {
+    xSemaphoreTake(motorsControlSemaphore, portMAX_DELAY);
 	currentLeftMotorSpeed = speed;
-    if (!isPaused) {
-        Motors::leftMotor(speed);
-    }
+    Motors::leftMotor(speed);
+    xSemaphoreGive(motorsControlSemaphore);
 }
 
 void PausableMotors::pause() {
-    isPaused = true;
+    xSemaphoreTake(motorsControlSemaphore, portMAX_DELAY);
     Motors::stop();
 }
 
 void PausableMotors::resume() {
-    isPaused = false;
     Motors::rightMotor(currentRightMotorSpeed);
     Motors::leftMotor(currentLeftMotorSpeed);
-}
-
-void PausableMotors::freeze() {
-    isPaused = true;
-}
-
-void PausableMotors::unfreeze() {
-    isPaused = false;
+    xSemaphoreGive(motorsControlSemaphore);
 }

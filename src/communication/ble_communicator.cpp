@@ -8,9 +8,7 @@ bool partnerFound = false;
 
 /*********************** INITIALIZING METHODS ****************************/
 
-BLE_communicator::BLE_communicator() {
-
-}
+BLE_communicator::BLE_communicator() {}
 
 BLE_communicator::BLE_communicator(Collision_avoidance* avoidance) {
 	this->avoidance = avoidance;
@@ -37,16 +35,10 @@ void BLE_communicator::setUpCommunication() {
 
 /*********************** BLUETOOTH NOTIFYING METHODS ****************************/
 
-
-
-
-
 void BLE_communicator::announceNewCourse(Point position, Point destination) {
 	LOCAL_courseCharacteristic->setCourse(position, destination);
 	notifyPartner(NEW_COURSE);
 }                                                 
-
-
 
 void BLE_communicator::signalCollision(Point ownPosition, Point ownDestination) {
 	LOCAL_courseCharacteristic->setCourse(ownPosition, ownDestination);
@@ -72,7 +64,7 @@ void BLE_communicator::notifyPartner(NotificationCode notificationCode) {
 	LOCAL_notificationCharacteristic->notify();
 }
 
-void BLE_communicator::listen() {
+void BLE_communicator::listen(void* parameter) {
 	while(true){
 		switch (notificationCode) {
 			case NEW_COURSE:
@@ -221,6 +213,16 @@ void BLE_communicator::connect()
   setUpCharacteristics(client);
 }
 
+void BLE_communicator::runListeningTask() {
+	xTaskCreate(
+		listen,
+		"Listening task",
+		10000,
+		NULL,
+		2,
+		NULL
+	);
+}
 
 /**************************** BLUETOOTH EVENT-HANDLING METHODS ****************************/
 

@@ -14,6 +14,8 @@
 #include <BLEServer.h>
 #include <BLE2902.h>
 
+#include "freertos/task.h"
+
 #include "../geometry/Point.h"
 #include "protocol.h"
 #include "characteristics.h"
@@ -41,8 +43,6 @@ class BLE_communicator
         void propose(int number_of_steps);
         void respondToProposal(protocol::ResponseToProposal response);
 		void announceFreeWay();
-		
-		void listen();
 	
 	private:
 		Collision_avoidance* avoidance;
@@ -75,7 +75,10 @@ class BLE_communicator
 		void scan();
 		void connect();
 		void setUpCharacteristics(BLEClient* client);
+		void runListeningTask();
 		
+		void listen(void* parameter);
+
 		/*BLUETOOTH EVENT-HANDLING METHODS*/
 		
 		void registerCallback(BLEClient* pClient);

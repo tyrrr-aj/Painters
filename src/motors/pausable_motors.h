@@ -2,6 +2,7 @@
 #define PAUSABLE_MOTORS_H
 
 #include "motors.h"
+#include "freertos/semphr.h"
 
 class PausableMotors: public Motors {
     public:
@@ -14,14 +15,11 @@ class PausableMotors: public Motors {
 
         void pause();
         void resume();
-        void freeze();
-        void unfreeze();
 
     private:
         int currentRightMotorSpeed;
         int currentLeftMotorSpeed;
-        bool isPaused;
-        
+        SemaphoreHandle_t motorsControlSemaphore;
 };
 
 #endif

@@ -19,12 +19,10 @@ double lines::getDistanceBetweenPointAndLine(Point point, Point line_start, Poin
     // We find projection of point p onto the line. 
     // It falls where t = [(p-v) . (w-v)] / |w-v|^2
     // We clamp t from [0,1] to handle points outside the segment vw.
-    Vector *vec1 = new Vector(point - line_start);
-    Vector *vec2 = new Vector(line_end - line_start);
-    const double t = std::max(0.0, std::min(1.0, vec1->scalar_product(*vec2) / segment_length_squared));
+    Vector vec1(point - line_start);
+    Vector vec2(line_end - line_start);
+    const double t = std::max(0.0, std::min(1.0, vec1.scalar_product(vec2) / segment_length_squared));
     const Vector projection = Vector(line_start) + Vector(line_end - line_start) * t;  // Projection falls on the segment
-    delete vec1;
-    delete vec2;
     return Point::distance(point, Point(projection));
 }
 

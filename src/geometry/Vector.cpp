@@ -6,6 +6,11 @@ Vector::Vector()
 	Y = 0;
 }
 
+Vector::Vector(Point point) {
+	X = point.X;
+	Y = point.Y;
+}
+
 Vector::Vector(double X, double Y)
 {
 	this->X = X;
@@ -20,6 +25,10 @@ double Vector::length()
 Vector Vector::getNormalVector()
 {
 	return Vector(this->X / length() , this->Y / length());
+}
+
+double Vector::scalar_product(Vector other) {
+	return X * other.X + Y * other.Y;
 }
 
 double Vector::distance(Vector other) {

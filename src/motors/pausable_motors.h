@@ -21,6 +21,7 @@ class PausableMotors: public Motors {
         int currentRightMotorSpeed;
         int currentLeftMotorSpeed;
         bool isPaused;
+        
 };
 
 #endif

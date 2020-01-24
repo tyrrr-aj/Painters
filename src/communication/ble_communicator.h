@@ -18,7 +18,7 @@
 #include "protocol.h"
 #include "characteristics.h"
 
-#define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define PAINTERS_SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define POINT_1_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define POINT_2_CHARACTERISTIC_UUID "beb1234e-36e1-4688-b7f5-ea07361b26a8"
 
@@ -74,11 +74,12 @@ class BLE_communicator
 		void createServer();
 		void scan();
 		void connect();
+		void setUpCharacteristics(BLEClient* client);
 		
 		/*BLUETOOTH EVENT-HANDLING METHODS*/
 		
 		void registerCallback(BLEClient* pClient);
-		static void notifyCallback(BLERemoteCharacteristic* characteristic, uint8_t* pData, size_t length, bool isNotify);
+		static void notificationCallback(BLERemoteCharacteristic* characteristic, uint8_t* pData, size_t length, bool isNotify);
 		
 		/*METHODS TO CODE AND ENCODE BLUETOOTH MESSAGES*/
 		

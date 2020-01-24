@@ -49,7 +49,7 @@ void BLE_communicator::announceNewCourse(Point position, Point destination) {
 
 
 void BLE_communicator::signalCollision(Point ownPosition, Point ownDestination) {
-	LOCAL_courseCharacteristic->setCourse(position, destination);
+	LOCAL_courseCharacteristic->setCourse(ownPosition, ownDestination);
 	notifyPartner(COLLISION_SPOTTED);
 }
 
@@ -107,23 +107,23 @@ All methods below are private.
 /***************************** BLUETOOTH MESSAGES CALLBACKS ******************************/
 
 void BLE_communicator::newCourseCallback() {
-	Course* newCourse = reinterpret_cast<Course*>(REMOTE_courseCharacteristic->readValue());
+	Course* newCourse = reinterpret_cast<Course*>(REMOTE_courseCharacteristic->readRawData());
 	avoidance->reactToPartnersCourseChange(newCourse->position, newCourse->destination);
 }
 
 void BLE_communicator::collisionSpottedCallback() {
-	Course* newCourse = reinterpret_cast<Course*>(REMOTE_courseCharacteristic->readValue());
-	avoidance->reactToCollisionSpottedMessage(newCourse->position, newCourse->destination)
+	Course* newCourse = reinterpret_cast<Course*>(REMOTE_courseCharacteristic->readRawData());
+	avoidance->reactToCollisionSpottedMessage(newCourse->position, newCourse->destination);
 }
 
 void BLE_communicator::proposalCallback() {
-	int* proposal = reinterpret_cast<int*>(REMOTE_proposalCharacteristic->readValue());
+	int* proposal = reinterpret_cast<int*>(REMOTE_proposalCharacteristic->readRawData());
 	avoidance->reactToProposal(*proposal);
 }
 
 void BLE_communicator::responseToProposalCallback() {
-	protocol::ResponseToProposal* response = reinterpret_cast<int*>(REMOTE_responseCharacteristic->readValue());
-	avoidance->reactToProposalResponse(*response);
+	protocol::ResponseToProposal response = static_cast<protocol::ResponseToProposal>(*reinterpret_cast<int*>(REMOTE_responseCharacteristic->readRawData()));
+	avoidance->reactToProposalResponse(response);
 }
 
 void BLE_communicator::freeWayCallback() {
@@ -218,7 +218,7 @@ void BLE_communicator::connect()
   BLEClient* client  = BLEDevice::createClient();
   client->connect(myServerDevice);
   Serial.println("Connected to the server ");
-  setUpCharacterisitcs(client);
+  setUpCharacteristics(client);
 }
 
 
@@ -226,7 +226,7 @@ void BLE_communicator::connect()
 
 
 void BLE_communicator::setUpCharacteristics(BLEClient* client) {
-  BLERemoteService* paintersRemoteService = pClient->getService(PAINTERS_SERVICE_UUID);
+  BLERemoteService* paintersRemoteService = client->getService(PAINTERS_SERVICE_UUID);
   REMOTE_notificationCharacteristic = paintersRemoteService->getCharacteristic(NOTIFICATION_CHARACTERISTIC_UUID);
   REMOTE_courseCharacteristic = paintersRemoteService->getCharacteristic(COURSE_CHARACTERISTIC_UUID);
   REMOTE_proposalCharacteristic = paintersRemoteService->getCharacteristic(PROPOSAL_CHARACTERISTIC_UUID);

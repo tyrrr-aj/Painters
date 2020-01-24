@@ -64,27 +64,28 @@ void BLE_communicator::notifyPartner(NotificationCode notificationCode) {
 	LOCAL_notificationCharacteristic->notify();
 }
 
-void BLE_communicator::listen(void* parameter) {
+void BLE_communicator::listen(void* selfRaw) {
+	BLE_communicator* self = static_cast<BLE_communicator*>(selfRaw);
 	while(true){
 		switch (notificationCode) {
 			case NEW_COURSE:
-				newCourseCallback();
+				self->newCourseCallback();
 				break;
 
 			case COLLISION_SPOTTED:
-				collisionSpottedCallback();
+				self->collisionSpottedCallback();
 				break;
 
 			case PROPOSAL:
-				proposalCallback();
+				self->proposalCallback();
 				break;
 
 			case RESPONSE_TO_PROPOSAL:
-				responseToProposalCallback();
+				self->responseToProposalCallback();
 				break;
 
 			case FREE_WAY:
-				freeWayCallback();
+				self->freeWayCallback();
 				break;
 		}
 		notificationCode = NONE;
@@ -211,16 +212,18 @@ void BLE_communicator::connect()
   client->connect(myServerDevice);
   Serial.println("Connected to the server ");
   setUpCharacteristics(client);
+  runListeningTask();
 }
 
 void BLE_communicator::runListeningTask() {
-	xTaskCreate(
+	xTaskCreatePinnedToCore(
 		listen,
 		"Listening task",
 		10000,
+		this,
+		1,
 		NULL,
-		2,
-		NULL
+		LISTENING_TASK_CORE
 	);
 }
 

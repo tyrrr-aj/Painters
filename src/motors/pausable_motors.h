@@ -15,6 +15,8 @@ class PausableMotors: public Motors {
 
         void pause();
         void resume();
+        void freeze();
+        void unfreeze();
 
     private:
         int currentRightMotorSpeed;

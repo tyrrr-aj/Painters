@@ -52,3 +52,11 @@ void PausableMotors::resume() {
     Motors::leftMotor(currentLeftMotorSpeed);
     xSemaphoreGive(motorsControlSemaphore);
 }
+
+void PausableMotors::freeze() {
+    xSemaphoreTake(motorsControlSemaphore, portMAX_DELAY);
+}
+
+void PausableMotors::unfreeze() {
+    xSemaphoreGive(motorsControlSemaphore);
+}

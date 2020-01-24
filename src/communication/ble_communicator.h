@@ -24,6 +24,8 @@
 #define POINT_1_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define POINT_2_CHARACTERISTIC_UUID "beb1234e-36e1-4688-b7f5-ea07361b26a8"
 
+#define LISTENING_TASK_CORE 1
+
 class Collision_avoidance;
 
 class BLE_communicator
@@ -45,6 +47,7 @@ class BLE_communicator
 		void announceFreeWay();
 	
 	private:
+
 		Collision_avoidance* avoidance;
 	
 		NotificationCharacteristic* LOCAL_notificationCharacteristic;
@@ -77,7 +80,7 @@ class BLE_communicator
 		void setUpCharacteristics(BLEClient* client);
 		void runListeningTask();
 		
-		void listen(void* parameter);
+		static void listen(void* parameter);
 
 		/*BLUETOOTH EVENT-HANDLING METHODS*/
 		

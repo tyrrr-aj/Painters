@@ -83,16 +83,6 @@ void Steering::rotateChassis()
 		motor->leftMotor(BASE_SPEED);
 		motor->rightMotor(-BASE_SPEED);
 	}
-/*
-	Vector previousRotation = currentRotation;
-	Vector lastDifference = currentRotation - previousRotation;
-	while (desiredRotation.distance((currentRotation + lastDifference).getNormalVector())
-		<= desiredRotation.distance(currentRotation)
-		&& !taskAlreadyDone) {
-		previousRotation = currentRotation;
-		currentRotation = localization->getCurrentRotation();
-		lastDifference = currentRotation - previousRotation;
-		*/
 
 	Serial.println("");
 	Serial.println("************************************************************");

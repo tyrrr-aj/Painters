@@ -7,12 +7,7 @@ Library needs to be supported by motors library - user is responsible
 for providing proper and up-to-date direction on each wheel.
 
 Notice the "pins.h" config header file in dependecies - this library
-won't work unless you set pin bindings' values there appropriately!
-
-This file usage is intended to be beer-driven: 
-if you think you've found a bug, don't contact
-us, drink a craft beer instead. If bug is
-still there - repeat. Cheers!
+won't work unless you set pin bindings' values there appropriately!s
 	
 This code has been inspired by SparkFun's RedBotEncoder library
 - big "thank you" goes to it's creator from here!

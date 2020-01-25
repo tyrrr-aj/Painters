@@ -116,9 +116,12 @@ Robot Collision_avoidance::checkWhoShouldWait(int partners_number_of_steps_to_fr
 }
 
 int Collision_avoidance::calculateNumberOfStepsToFreeWay(Point partners_position, Point partners_destination) {
-	/*for (int number_of_steps = 1,
-			std::vector<Point*>::iterator pos = this->current_destination,
-			std::vector<Point*>::iterator des = std::next(this->current_destination, 1);
+	int number_of_steps;
+	std::vector<Point*>::iterator pos;
+	std::vector<Point*>::iterator des;
+	for (number_of_steps = 1,
+			pos = this->current_destination,
+			des = std::next(this->current_destination, 1);
 			des != path.end();
 			pos++, des++, number_of_steps++) {
 		if (checkForDirectCollision(**pos, **des, partners_position)) {
@@ -127,7 +130,7 @@ int Collision_avoidance::calculateNumberOfStepsToFreeWay(Point partners_position
 		if (!checkIfPathsAreCrossing(**pos, **des, partners_position, partners_destination)) {
 			return number_of_steps;
 		}
-	}*/
+	}
 	return -1;
 }
 

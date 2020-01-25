@@ -17,7 +17,6 @@ public:
 
 	void pause();
 	void resume();
-	void finishInterruptedTask(Point destination);
 	
 private:
 	Localization* localization;
@@ -28,8 +27,6 @@ private:
 	void calculateTransitionVector(Point point);
 	void rotateChassis();
 	void leadChassis();
-
-	bool taskAlreadyDone; // necessary in case robot has been redirected to a different point and then finishInterruptedTask() was called
 };
 
 #endif

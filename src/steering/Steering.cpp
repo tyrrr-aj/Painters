@@ -4,7 +4,6 @@ Steering::Steering(PausableMotors* motor, Localization* localization)
 {
 	this->motor = motor;
 	this->localization = localization;
-	taskAlreadyDone = false;
 }
 
 void Steering::driveTo(Point point)
@@ -16,9 +15,6 @@ void Steering::driveTo(Point point)
 	
 	leadChassis();
 	delay(1200);
-
-	taskAlreadyDone = false;
-	motor->unfreeze();
 }
 
 void Steering::pause() {
@@ -27,12 +23,6 @@ void Steering::pause() {
 
 void Steering::resume() {
 	motor->resume();
-}
-
-void Steering::finishInterruptedTask(Point destination) {
-	driveTo(destination);
-	motor->freeze();
-	taskAlreadyDone = true;
 }
 
 /*********************************************************************
@@ -84,31 +74,11 @@ void Steering::rotateChassis()
 		motor->rightMotor(-BASE_SPEED);
 	}
 
-	Serial.println("");
-	Serial.println("************************************************************");
-	Serial.println("");
-
 	//double previousDistance = desiredRotation.distance(currentRotation);
 
-	while (currentRotation != desiredRotation && !taskAlreadyDone) {
+	while (currentRotation != desiredRotation) {
 		delay(30);
-		//previousDistance = desiredRotation.distance(currentRotation);
-		currentRotation = localization->getCurrentRotation();
-		Serial.print("currentRotation: ");
-		Serial.print(currentRotation.X);
-		Serial.print(", ");
-		Serial.println(currentRotation.Y);
-
-		Serial.print("(desiredRotation: ");
-		Serial.print(desiredRotation.X);
-		Serial.print(", ");
-		Serial.print(desiredRotation.Y);
-		Serial.println(")");
 	}
-
-	Serial.println("");
-	Serial.println("****************************************************************");
-	Serial.println("");
 
 	motor->stop();
 	delay(100);
@@ -123,7 +93,7 @@ void Steering::leadChassis()
 
 	double previousDistance = desiredPosition->distance(currentXY);
 	
-	while (desiredPosition->distance(currentXY) <= previousDistance && !taskAlreadyDone)
+	while (desiredPosition->distance(currentXY) <= previousDistance)
 	{
 		previousDistance = desiredPosition->distance(currentXY);
 		currentXY = localization->getCurrentXY();

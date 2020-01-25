@@ -1,11 +1,11 @@
-#include "Point.h"
+#include "RpPoint.h"
 
-Point::Point()
+RpPoint::RpPoint()
 {
 
 }
 
-Point::Point(double coordX, double coordY, double currentDist)
+RpPoint::RpPoint(double coordX, double coordY, double currentDist)
 {
 	this->coordX = coordX;
 	this->coordY = coordY;
@@ -13,7 +13,7 @@ Point::Point(double coordX, double coordY, double currentDist)
 	this->orderNumber = -1;
 }
 
-Point Point::pickFirst(std::vector<Point*>& points, int number)
+RpPoint RpPoint::pickFirst(std::vector<RpPoint*>& points, int number)
 {
 	for (int i = 0; i < number; ++i)
 	{
@@ -21,7 +21,7 @@ Point Point::pickFirst(std::vector<Point*>& points, int number)
 			points[i]->coordY * points[i]->coordY;
 	}
 	double minDist = INT16_MAX;
-	Point result;
+	RpPoint result;
 	for (int i = 0; i < number; ++i)
 	{
 		if (points[i]->currentDist < minDist)
@@ -33,13 +33,13 @@ Point Point::pickFirst(std::vector<Point*>& points, int number)
 	return result;
 }
 
-double Point::calculateDist(Point other)
+double RpPoint::calculateDist(RpPoint other)
 {
 	return (this->coordX - other.coordX) * (this->coordX - other.coordX) +
 		(this->coordY - other.coordY) * (this->coordY - other.coordY);
 }
 
-const Point Point::operator=(const Point point)
+const RpPoint RpPoint::operator=(const RpPoint point)
 {
 	this->coordX = point.coordX;
 	this->coordY = point.coordY;

@@ -1,36 +1,29 @@
-#include "src/motors/motors.h"
+#include "src/motors/pausable_motors.h"
 #include "src/encoder/encoder.h"
-
 #include "src/route_planning/RoutePlanner.h"
 #include "src/localization/localization.h"
-#include "src/steering/Control.h"
-
+#include "src/control/Control.h"
 #include "src/file_loader/file_loader.h"
+#include "src/geometry/Point.h"
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(115200); // for debug purposes
 
   FileLoader fileLoader;
   RoutePlanner routePlanner(&fileLoader);
 
   Serial.println("RoutePlanner created successfully");
-  std::vector<Point*> path;// = routePlanner.getPath("/pattern1.txt");
-  path.push_back(new Point(100, 0));
-  path.push_back(new Point(0, 0));
-
-  for(int i = 0; i < path.size(); i++) {
-    Serial.print(path[i]->coordX);
-    Serial.print(" ");
-    Serial.println(path[i]->coordY);
-  }
+  std::vector<Point*> path = routePlanner.getPath("/pattern1.txt");
  
   Encoder encoder;
-  Motors motors;
+  PausableMotors motors;
   motors.addEncoder(&encoder);
   
   Localization localization(&encoder);
   Steering steering(&motors, &localization);
-  Control control(path, steering);
+  //BLE_communicator communicator;
+  //Collision_avoidance collision_avoidance(&communicator, &steering, &localization);
+  Control control(path, &steering, NULL);
 
   control.accomplishTrace();
 
@@ -39,4 +32,3 @@ void setup() {
 void loop() {
   delay(100);
 }
-  

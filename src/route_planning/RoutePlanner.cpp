@@ -4,18 +4,18 @@ RoutePlanner::RoutePlanner(FileLoader* fileLoader) {
 	this->fileLoader = fileLoader;
 }
 
-bool RoutePlanner::sortByOrderNumber(Point* a, Point* b)
+bool RoutePlanner::sortByOrderNumber(RpPoint* a, RpPoint* b)
 {
 	return (a->orderNumber < b->orderNumber);
 }
 
-void RoutePlanner::addPoint(std::vector<Point*>& points, double coordX, double coordY, int i)
+void RoutePlanner::addPoint(std::vector<RpPoint*>& points, double coordX, double coordY, int i)
 {
-	Point* point = new Point(coordX, coordY);
+	RpPoint* point = new RpPoint(coordX, coordY);
 	points.push_back(point);
 }
 
-void RoutePlanner::readFile(std::vector<Point*>& points, std::string fileName)
+void RoutePlanner::readFile(std::vector<RpPoint*>& points, std::string fileName)
 {
 	File file;
 	file = fileLoader->loadFile(fileName);
@@ -42,7 +42,7 @@ void RoutePlanner::readFile(std::vector<Point*>& points, std::string fileName)
 
 std::vector<Point*> RoutePlanner::getPath(std::string path)
 {
-	std::vector<Point*> points;
+	std::vector<RpPoint*> points;
 	readFile(points, path);
 	int numberOfPts = points.size();
 	
@@ -50,7 +50,13 @@ std::vector<Point*> RoutePlanner::getPath(std::string path)
 	solver.solve();
 	
 	std::sort(points.begin(), points.end(), sortByOrderNumber);
-	return points;
+
+	// TODO: quick fix below, properly RpPoint should inherit from Point and be directly returned as Point
+	std::vector<Point*> output;
+	for (int i = 0; i < points.size(); i++) {
+		output.push_back(new Point(points[i]->coordX, points[i]->coordY));
+	}
+	return output;
 /*	for (auto it = points.begin(); it != points.end(); ++it)
 	{
 		std::cout << (*it)->orderNumber <<": (" << (*it)->coordX << "," << (*it)->coordY << ")" << std::endl;

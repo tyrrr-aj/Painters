@@ -1,0 +1,36 @@
+\documentclass[10pt]{article}
+\usepackage{pgf,tikz,pgfplots}
+\pgfplotsset{compat=1.15}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+\pagestyle{empty}
+\begin{document}
+\definecolor{rvwvcq}{rgb}{0.08235294117647059,0.396078431372549,0.7529411764705882}
+\begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1cm,y=1cm]
+\begin{axis}[
+x=1cm,y=1cm,
+axis lines=middle,
+ymajorgrids=true,
+xmajorgrids=true,
+xmin=-0.3599999999999998,
+xmax=22.759999999999987,
+ymin=-0.4899999999999978,
+ymax=15.530000000000005,
+xtick={0,1,...,22},
+ytick={0,1,...,15},]
+\clip(-0.36,-0.49) rectangle (22.76,15.53);
+\begin{scriptsize}
+\draw [fill=rvwvcq] (12.28,0.09) circle (2.5pt);
+\draw[color=rvwvcq] (12.44,0.52) node {$A$};
+\draw [fill=rvwvcq] (16.32,3.59) circle (2.5pt);
+\draw[color=rvwvcq] (16.48,4.02) node {$B$};
+\draw [fill=rvwvcq] (12.88,9.27) circle (2.5pt);
+\draw[color=rvwvcq] (13.04,9.7) node {$C$};
+\draw [fill=rvwvcq] (4.4,9.99) circle (2.5pt);
+\draw[color=rvwvcq] (4.56,10.42) node {$D$};
+\draw [fill=rvwvcq] (5.2,1.01) circle (2.5pt);
+\draw[color=rvwvcq] (5.36,1.44) node {$E$};
+\end{scriptsize}
+\end{axis}
+\end{tikzpicture}
+\end{document}

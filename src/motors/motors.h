@@ -12,11 +12,6 @@ method respectively).
 
 Notice the "pins.h" config header file in dependecies - this library
 won't work unless you set pin bindings' values there appropriately!
-
-This file usage is intended to be beer-driven: 
-if you think you've found a bug, don't contact
-us, drink a craft beer instead. If bug is
-still there - repeat. Cheers!
 	
 This code is strongly inspired by SparkFun's RedBotMotors library
 - big thank you goes to it's creator from here!
@@ -41,13 +36,13 @@ class Motors {
 		void stop();
 		void rightMotor(int speed);
 		void leftMotor(int speed);
+		void addEncoder(Encoder*);
+	
+	private:
 		void rightCoast();
 		void leftCoast();
 		void rightStop();
 		void leftStop();
-		void addEncoder(Encoder*);
-	
-	private:
 		void rightFwd(uint8_t speed);
 		void leftFwd(uint8_t speed);
 		void rightRev(uint8_t speed);

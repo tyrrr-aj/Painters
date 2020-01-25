@@ -3,9 +3,10 @@
 #include <algorithm> 
 #include <cstdlib>
 
-#include "Point.h"
+#include "RpPoint.h"
 #include "Solver.h"
 #include "../file_loader/file_loader.h"
+#include "../geometry/Point.h"
 
 class RoutePlanner {
 	public:
@@ -14,7 +15,7 @@ class RoutePlanner {
 	
 	private:
 		FileLoader* fileLoader;
-		void readFile(std::vector<Point*>&, std::string);
-		void addPoint(std::vector<Point*>&, double, double, int);
-		static bool sortByOrderNumber(Point*, Point*);
+		void readFile(std::vector<RpPoint*>&, std::string);
+		void addPoint(std::vector<RpPoint*>&, double, double, int);
+		static bool sortByOrderNumber(RpPoint*, RpPoint*);
 };

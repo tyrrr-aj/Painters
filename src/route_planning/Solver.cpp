@@ -4,7 +4,7 @@ Solver::Solver()
 {
 }
 
-Solver::Solver(std::vector<Point*> points, int X, int Y, int N)
+Solver::Solver(std::vector<RpPoint*> points, int X, int Y, int N)
 {
 	this->X = X;
 	this->Y = Y;
@@ -18,7 +18,7 @@ Solver::Solver(std::vector<Point*> points, int X, int Y, int N)
 	}
 }
 
-Point* Solver::pickFirst(std::vector<Point*>& points)
+RpPoint* Solver::pickFirst(std::vector<RpPoint*>& points)
 {
 	for (int i = 0; i < numberOfPts; ++i)
 	{
@@ -26,7 +26,7 @@ Point* Solver::pickFirst(std::vector<Point*>& points)
 			points[i]->coordY * points[i]->coordY;
 	}
 	double minDist = INT16_MAX;
-	Point* result = NULL;
+	RpPoint* result = NULL;
 	for (int i = 0; i < numberOfPts; ++i)
 	{
 		if (points[i]->currentDist < minDist)
@@ -38,7 +38,7 @@ Point* Solver::pickFirst(std::vector<Point*>& points)
 	return result;
 }
 
-void Solver::setDistances(Point point)
+void Solver::setDistances(RpPoint point)
 {
 	for (int i = 0; i < numberOfPts; ++i)
 	{
@@ -48,7 +48,7 @@ void Solver::setDistances(Point point)
 	}
 }
 
-void Solver::pickArea(Point point, std::vector<Point*>& areaPoints)
+void Solver::pickArea(RpPoint point, std::vector<RpPoint*>& areaPoints)
 {
 	for (int i = 0; i < numberOfPts; ++i)
 	{
@@ -64,10 +64,10 @@ void Solver::pickArea(Point point, std::vector<Point*>& areaPoints)
 	}
 }
 
-Point* Solver::findNext(Point* point, std::vector<Point*> areaPoints)
+RpPoint* Solver::findNext(RpPoint* point, std::vector<RpPoint*> areaPoints)
 {
 	double maxDist = INT_MAX;
-	Point* nextPoint = new Point();
+	RpPoint* nextPoint = new RpPoint();
 	int pos = -1;
 	for (int p = 0; p != areaPoints.size(); ++p)
 	{
@@ -82,9 +82,9 @@ Point* Solver::findNext(Point* point, std::vector<Point*> areaPoints)
 	return nextPoint;
 }
 
-void Solver::distributeOrder(Point point, std::vector<Point*>& areaPoints)
+void Solver::distributeOrder(RpPoint point, std::vector<RpPoint*>& areaPoints)
 {
-	Point* currentpoint = &point;
+	RpPoint* currentpoint = &point;
 	for(int i=0; i < areaPoints.size(); ++i)
 	{
 		currentpoint = findNext(currentpoint, areaPoints);
@@ -93,7 +93,7 @@ void Solver::distributeOrder(Point point, std::vector<Point*>& areaPoints)
 	}
 }
 
-void Solver::distributeOrder1(Point* point, std::vector<Point*>& areaPoints)
+void Solver::distributeOrder1(RpPoint* point, std::vector<RpPoint*>& areaPoints)
 {
 	point = findNext(point, areaPoints);
 	point->orderNumber = currentOrderNumber;
@@ -103,12 +103,12 @@ void Solver::distributeOrder1(Point* point, std::vector<Point*>& areaPoints)
 
 void Solver::solve()
 {
-	Point* currentPoint = pickFirst(points);
+	RpPoint* currentPoint = pickFirst(points);
 	currentPoint->orderNumber = 0;
 	currentOrderNumber = 1;
 	while (!allCovered)
 	{
-		std::vector<Point*> areaPoints;
+		std::vector<RpPoint*> areaPoints;
 		setDistances(*currentPoint);
 		pickArea(*currentPoint, areaPoints);
 		distributeOrder1(currentPoint, areaPoints);
